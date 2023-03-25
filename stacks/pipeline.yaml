@@ -213,3 +213,8 @@ Outputs:
     Value: !Ref EcrRepository
     Export:
       Name: EcrRepository
+  EcrRepositoryUri:
+    Description: A reference to the created ECR
+    Value: !GetAtt EcrRepository.RepositoryUri
+    Export:
+      Name: EcrRepositoryUri

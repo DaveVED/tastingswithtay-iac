@@ -58,6 +58,14 @@ Resources:
       FromPort: 31000
       ToPort: 61000
       SourceSecurityGroupId: !Ref AlbSecurityGroup
+  EcsSecurityGroupSelf:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref EcsSecurityGroup
+      IpProtocol: tcp
+      FromPort: 31000
+      ToPort: 61000
+      SourceSecurityGroupId: !Ref EcsSecurityGroup
   AlbSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
@@ -71,6 +79,14 @@ Resources:
       FromPort: 80
       ToPort: 80
       CidrIp: 70.123.176.84/32
+  AlbSecurityGroupSelf:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref AlbSecurityGroup
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      SourceSecurityGroupId: !Ref AlbSecurityGroup
   ECSTaskExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -84,3 +100,34 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  ECSTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub "${Project}-${ENV}-ui"
+      Cpu: "512"
+      NetworkMode: "awsvpc"
+      Memory: "2048"
+      ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
+      RequiresCompatibilities:
+        - "FARGATE"
+      ContainerDefinitions:
+        - Name: !Sub "${Project}-${ENV}-ui"
+          Image: !Join [":", [!ImportValue EcrRepositoryUri, "latest"]]
+          Cpu: "512"
+          Memory: "2048"
+          Essential: true
+          PortMappings:
+            - ContainerPort: 3000
+              HostPort: 3000
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudwatchLogsGroup
+              awslogs-region: !Ref "AWS::Region"
+              awslogs-stream-prefix: !Sub "${Project}-${ENV}"
+          HealthCheck:
+            Retries: 5
+            Interval: 120
+            Timeout: 60
+            StartPeriod: 300
+            Command: ["CMD-SHELL", "echo hello"]
