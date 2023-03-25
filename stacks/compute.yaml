@@ -23,6 +23,10 @@ Parameters:
     Type: String
     Default: "myproject"
     Description: "Project name"
+  TaskCount:
+    Type: Number
+    Default: 2
+    Description: "Number of ECS tasks to provision"
 Resources:
   CloudwatchLogsGroup:
     Type: "AWS::Logs::LogGroup"
@@ -131,3 +135,16 @@ Resources:
             Timeout: 60
             StartPeriod: 300
             Command: ["CMD-SHELL", "echo hello"]
+  ECSService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ECSCluster
+      ServiceName: !Sub "${Project}-${ENV}-ui-service"
+      TaskDefinition: !Ref ECSTaskDefinition
+      LaunchType: "FARGATE"
+      DesiredCount: !Ref TaskCount
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets: !Split [",", !ImportValue PrivateSubnets]
+          SecurityGroups: [!Ref EcsSecurityGroup]
+          AssignPublicIp: ENABLED
