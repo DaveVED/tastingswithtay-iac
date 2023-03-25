@@ -26,18 +26,6 @@ Parameters:
     Type: String
     Default: "myproject"
     Description: "Project name"
-  Owner:
-    Type: String
-    Default: "DaveVED"
-    Description: "GitHub repository owner"
-  Repo:
-    Type: String
-    Default: "tastingswithtay-ui"
-    Description: "GitHub repository name"
-  Branch:
-    Type: String
-    Default: "develop"
-    Description: "GitHub repository branch name"
 Resources:
   Networking:
     Type: AWS::CloudFormation::Stack
