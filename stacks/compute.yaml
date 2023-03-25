@@ -27,6 +27,10 @@ Parameters:
     Type: Number
     Default: 2
     Description: "Number of ECS tasks to provision"
+  ECRRepoUri:
+    Type: String
+    Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/myproject-dev-ui-ecr:latest"
+    Description: "ECR Repo UI for docker."
 Resources:
   CloudwatchLogsGroup:
     Type: "AWS::Logs::LogGroup"
@@ -116,7 +120,7 @@ Resources:
         - "FARGATE"
       ContainerDefinitions:
         - Name: !Sub "${Project}-${ENV}-ui"
-          Image: !Join [":", [!ImportValue EcrRepositoryUri, "latest"]]
+          Image: !Ref ECRRepoUri
           Cpu: "512"
           Memory: "2048"
           Essential: true
@@ -152,7 +156,6 @@ Resources:
         - ContainerName: !Sub "${Project}-${ENV}-ui"
           ContainerPort: 3000
           TargetGroupArn: !Ref EcsTargetGroup
-
   EcsLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -179,7 +182,7 @@ Resources:
       HealthyThresholdCount: 5
       UnhealthyThresholdCount: 5
       Matcher:
-        HttpCode: "200-399"
+        HttpCode: "200"
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-ui-target-group"

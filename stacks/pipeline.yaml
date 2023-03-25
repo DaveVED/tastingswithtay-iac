@@ -43,48 +43,6 @@ Parameters:
     Description: "GitHub repository branch name"
 
 Resources:
-  EcrKey:
-    Type: AWS::KMS::Key
-    Properties:
-      Description: Key for encrypting ECR repository
-      KeyPolicy:
-        Version: "2012-10-17"
-        Id: key-default-1
-        Statement:
-          - Sid: Allow use of the key within the account
-            Effect: Allow
-            Principal:
-              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
-            Action:
-              - kms:*
-            Resource: "*"
-  EcrRepository:
-    Type: AWS::ECR::Repository
-    Properties:
-      RepositoryName: !Sub "${Project}-${ENV}-ui-ecr"
-      EncryptionConfiguration:
-        EncryptionType: KMS
-        KmsKey: !Ref EcrKey
-      ImageScanningConfiguration:
-        ScanOnPush: true
-      Tags:
-        - Key: "Name"
-          Value: !Sub "${Project}-${ENV}-ui-ecr"
-      RepositoryPolicyText: |
-        {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": "*",
-              "Action": [
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-                "ecr:BatchCheckLayerAvailability"
-              ]
-            }
-          ]
-        }
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -102,7 +60,7 @@ Resources:
           - Name: AWS_ACCOUNT_ID
             Value: !Ref AWS::AccountId
           - Name: IMAGE_REPO_NAME
-            Value: !Ref EcrRepository # Reference to the ECR repository resource
+            Value: !ImportValue EcrRepository # Reference to the ECR repository resource
       Source:
         Type: CODEPIPELINE
         BuildSpec: "buildspec.yml"
@@ -207,14 +165,3 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-ui-pipeline-artifacts"
-Outputs:
-  EcrRepository:
-    Description: A reference to the created ECR
-    Value: !Ref EcrRepository
-    Export:
-      Name: EcrRepository
-  EcrRepositoryUri:
-    Description: A reference to the created ECR
-    Value: !GetAtt EcrRepository.RepositoryUri
-    Export:
-      Name: EcrRepositoryUri
