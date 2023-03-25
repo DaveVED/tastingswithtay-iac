@@ -19,23 +19,6 @@ Parameters:
     Default: "myproject"
     Description: "Project name"
 Resources:
-  KmsKey:
-    Type: "AWS::KMS::Key"
-    Properties:
-      KeyPolicy:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
-            Action: "kms:*"
-            Resource: "*"
-
-  KmsKeyAlias:
-    Type: "AWS::KMS::Alias"
-    Properties:
-      AliasName: "alias/ecsKey"
-      TargetKeyId: !Ref KmsKey
   CloudwatchLogsGroup:
     Type: "AWS::Logs::LogGroup"
     Properties:
@@ -47,7 +30,6 @@ Resources:
       ClusterName: !Sub "${Project}-${ENV}-cluster"
       Configuration:
         ExecuteCommandConfiguration:
-          KmsKeyId: !Ref KmsKeyAlias
           Logging: OVERRIDE
           LogConfiguration:
             CloudWatchEncryptionEnabled: true
@@ -63,6 +45,14 @@ Resources:
     Properties:
       GroupDescription: ECS Security Group
       VpcId: !ImportValue VPC
+  EcsSecurityGroupSelf:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref EcsSecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      SourceSecurityGroupId: !Ref EcsSecurityGroupSelf
   EcsSecurityGroupALBports:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
@@ -84,3 +74,11 @@ Resources:
       FromPort: 80
       ToPort: 80
       CidrIp: 70.123.176.84/32
+  AlbSecurityGroupSelf:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref AlbSecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      SourceSecurityGroupId: !Ref AlbSecurityGroupSelf
