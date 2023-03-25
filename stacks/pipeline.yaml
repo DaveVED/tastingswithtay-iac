@@ -1,3 +1,4 @@
+######################################################################################################
 # Creats the core supporting the tastingswithtay-ui https://github.com/DaveVED/tastingswithtay-ui
 #
 # Using this pipeline.yaml temaplte, you will get a pipeline configuration with the following setup.
@@ -11,6 +12,7 @@
 #
 # The pipleline, supports a reactjs applcaiont right now, but could be support any, if the user
 # change there buildspec.yml to build a different type of docker.
+######################################################################################################
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Provision CICD to deploy a ReactJS application tastingswithtay to ECS.
 Parameters:

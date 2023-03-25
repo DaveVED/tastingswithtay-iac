@@ -1,3 +1,4 @@
+######################################################################################
 # Wraps and creates teh entire AWS foundation supporting tastingswithtay
 #
 # Using this foundation, you will get the folloiwng setup.
@@ -10,6 +11,7 @@
 # The CI process for this foundation runs on AWS CodePipeline. We wraped it in such
 # a way, so we only have to have one CodeDeploy, for the foundaiton, which then can
 # deploy the ohter stacks.
+######################################################################################
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "Networking Configurations for tastingswithtay"
 Parameters:
@@ -46,6 +48,8 @@ Resources:
         Project: !Ref Project
   Pipeline:
     Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - Networking
     Properties:
       TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/pipeline.yaml"
       Parameters:
@@ -56,6 +60,9 @@ Resources:
         Branch: !Ref Branch
   Compute:
     Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - Networking
+      - Pipeline
     Properties:
       TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/compute.yaml"
       Parameters:

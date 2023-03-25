@@ -1,3 +1,4 @@
+################################################################################################################
 # Creats the core common networking components for https://tastingswithtays.com
 #
 # Using this networking.yaml temaplte, you will get a VPC configuration with the following setup.
@@ -13,6 +14,7 @@
 # The CI for this IaC stores teh stacks in s3, then wraps them all in the foundation.yaml parent, this way we
 # can use common components, but only deploy one stack, removing the complex need for custom buildspec.yaml,
 # but instead allow us to use one CodeDeploy.
+################################################################################################################
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "Networking Configurations for tastingswithtay"
 Parameters:
