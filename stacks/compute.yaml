@@ -45,14 +45,6 @@ Resources:
     Properties:
       GroupDescription: ECS Security Group
       VpcId: !ImportValue VPC
-  EcsSecurityGroupSelf:
-    Type: "AWS::EC2::SecurityGroupIngress"
-    Properties:
-      GroupId: !Ref EcsSecurityGroup
-      IpProtocol: -1
-      FromPort: -1
-      ToPort: -1
-      SourceSecurityGroupId: !Ref EcsSecurityGroupSelf
   EcsSecurityGroupALBports:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
@@ -74,11 +66,16 @@ Resources:
       FromPort: 80
       ToPort: 80
       CidrIp: 70.123.176.84/32
-  AlbSecurityGroupSelf:
-    Type: "AWS::EC2::SecurityGroupIngress"
+  ECSTaskExecutionRole:
+    Type: AWS::IAM::Role
     Properties:
-      GroupId: !Ref AlbSecurityGroup
-      IpProtocol: -1
-      FromPort: -1
-      ToPort: -1
-      SourceSecurityGroupId: !Ref AlbSecurityGroupSelf
+      RoleName: !Sub "${Project}-${ENV}-ecs-task-execution"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
