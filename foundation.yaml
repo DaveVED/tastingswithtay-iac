@@ -28,6 +28,7 @@ Resources:
   Networking:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: "Path/To/Template"
+      TemplateURL: https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/networking.yaml
       Parameters:
-        ExampleKey: ExampleValue
+        ENV: !Ref ENV
+        Project: !Ref Project

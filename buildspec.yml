@@ -21,7 +21,7 @@ phases:
       - echo Entered the post_build phase...
       - echo Build completed on `date`
       - ls -l
-      - aws s3 sync stacks s3://${S3_BUCKET}/stacks # Upload all files under /stacks to the S3 bucket
+      - aws s3 sync stacks s3://${S3_BUCKET} # Upload all files under /stacks to the S3 bucket
 
 artifacts:
   files:
