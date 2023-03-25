@@ -35,6 +35,11 @@ Resources:
     Properties:
       AliasName: !Sub "alias/${Project}-${ENV}-ECSKey"
       TargetKeyId: !Ref KmsKey
+  CloudwatchLogsGroup:
+    Type: "AWS::Logs::LogGroup"
+    Properties:
+      LogGroupName: !Sub "${Project}-${ENV}-ECSLogGroup"
+      RetentionInDays: 14
   ECSCluster:
     Type: "AWS::ECS::Cluster"
     Properties:
