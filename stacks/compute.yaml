@@ -62,9 +62,9 @@ Resources:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
       GroupId: !Ref EcsSecurityGroup
-      IpProtocol: tcp
-      FromPort: 31000
-      ToPort: 61000
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
       SourceSecurityGroupId: !Ref EcsSecurityGroup
   AlbSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
@@ -83,9 +83,9 @@ Resources:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
       GroupId: !Ref AlbSecurityGroup
-      IpProtocol: tcp
-      FromPort: 80
-      ToPort: 80
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
       SourceSecurityGroupId: !Ref AlbSecurityGroup
   ECSTaskExecutionRole:
     Type: AWS::IAM::Role
