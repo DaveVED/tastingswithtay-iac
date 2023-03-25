@@ -3,6 +3,9 @@
 # Using this compute.yaml temaplte, you will get a compute configuration with the following setup.
 #    1. ECS Cluster, with encryption, logging, and container insights.
 #    2. ECS Task definition working with the ECR for your UI.
+#    3. ECS Service to Mange the required number of provisioned tasks.
+#    4. ALB to front as an entry point.
+#    5. Route53 + SSL support.
 #
 # For the three tier applicaiotn, this is enough infrastruce to support, no need to use EKS.
 AWSTemplateFormatVersion: "2010-09-09"
