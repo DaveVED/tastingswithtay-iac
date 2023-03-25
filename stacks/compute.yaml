@@ -1,11 +1,54 @@
-# Creats the core supporting the tastingswithtay-ui https://github.com/DaveVED/tastingswithtay-ui
+# Creats the core common compute components for https://tastingswithtays.com
 #
-# Using this pipeline.yaml temaplte, you will get a pipeline configuration with the following setup.
-#    1. ECR Repository for the image, needed for the pipeline.
-#    2. CodeBuild to Build and push the image to ECR.
-#    3. CodeDeploy to deploy teh image to ECS.
-#    4. CodePipeline to wrap the CICD.
-#    5. All required IAM & Monitoring configurations.
+# Using this compute.yaml temaplte, you will get a compute configuration with the following setup.
+#    1. A ECS Cluster, with encryption, logging, and container insights.
 #
-# The pipleline, supports a reactjs applcaiont right now, but could be support any, if the user
-# change there buildspec.yml to build a different type of docker.
+# TODO: Add in ASG.
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  ENV:
+    Type: String
+    Default: "dev"
+    AllowedValues:
+      - "dev"
+      - "prod"
+    Description: "Environment (dev, prod)"
+  Project:
+    Type: String
+    Default: "myproject"
+    Description: "Project name"
+Resources:
+  KmsKey:
+    Type: "AWS::KMS::Key"
+    Properties:
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+
+  KmsKeyAlias:
+    Type: "AWS::KMS::Alias"
+    Properties:
+      AliasName: !Sub "alias/${Project}-${ENV}-ECSKey"
+      TargetKeyId: !Ref KmsKey
+  ECSCluster:
+    Type: "AWS::ECS::Cluster"
+    Properties:
+      ClusterName: !Sub "${Project}-${ENV}-cluster"
+      Configuration:
+        ExecuteCommandConfiguration:
+          KmsKeyId: !Ref KmsKeyAlias
+          Logging: OVERRIDE
+          LogConfiguration:
+            CloudWatchEncryptionEnabled: true
+            CloudWatchLogGroupName: !Ref CloudwatchLogsGroup
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-cluster"

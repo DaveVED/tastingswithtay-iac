@@ -7,6 +7,8 @@
 #    4. CodePipeline to wrap the CICD.
 #    5. All required IAM & KMS, & Monitoring configurations.
 #
+# NOTE, to run, you will need your GITHUB_TOKEN in a ssm parameter store called GITHUB_TOKEN.
+#
 # The pipleline, supports a reactjs applcaiont right now, but could be support any, if the user
 # change there buildspec.yml to build a different type of docker.
 AWSTemplateFormatVersion: "2010-09-09"

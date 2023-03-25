@@ -8,8 +8,7 @@
 #    5. An Nat Gateway, to allow the private subents to reach out to the world wide web.
 #    6. Route Table configurations for your subent mappings.
 #    7. Raw set of VPCE for ECR, s3, and Lambda.
-#    8. ACM to be used with preexisting Public Hosted Zone in Route53.
-#    9. Outputs for resources needed in ohter stacks.
+#    8. Outputs for resources needed in ohter stacks.
 #
 # The CI for this IaC stores teh stacks in s3, then wraps them all in the foundation.yaml parent, this way we
 # can use common components, but only deploy one stack, removing the complex need for custom buildspec.yaml,
@@ -162,13 +161,6 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateRouteTable2
       SubnetId: !Ref PrivateSubnet2
-  Certificate:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: tastingswithtay.com
-      ValidationMethod: DNS
-      SubjectAlternativeNames:
-        - "*.tastingswithtay.com"
 
 Outputs:
   VPC:
@@ -186,8 +178,3 @@ Outputs:
     Value: !Join [",", [!Ref PrivateSubnet1, !Ref PrivateSubnet2]]
     Export:
       Name: PrivateSubnets
-  Certificate:
-    Description: ACM Certificate created.
-    Value: Certificate
-    Export:
-      Name: Certificate
