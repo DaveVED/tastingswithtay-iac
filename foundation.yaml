@@ -1,0 +1,33 @@
+# Wraps and creates teh entire AWS foundation supporting tastingswithtay
+#
+# Using this foundation, you will get the folloiwng setup.
+#
+#    1. Networking configuraitons.
+#    2. CICD process setup.
+#    3. Compute setup to expose a ReactJS application.
+#    4. Lmabda, APIGateway, and ELD connectibity.
+#
+# The CI process for this foundation runs on AWS CodePipeline. We wraped it in such
+# a way, so we only have to have one CodeDeploy, for the foundaiton, which then can
+# deploy the ohter stacks.
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Networking Configurations for tastingswithtay"
+Parameters:
+  ENV:
+    Type: String
+    Default: "dev"
+    AllowedValues:
+      - "dev"
+      - "prod"
+    Description: "Environment (dev, prod)"
+  Project:
+    Type: String
+    Default: "tastingswithtay"
+    Description: "Project Name for resource naming."
+Resources:
+  Networking:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "Path/To/Template"
+      Parameters:
+        ExampleKey: ExampleValue
