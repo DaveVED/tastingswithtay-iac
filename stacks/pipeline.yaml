@@ -1,0 +1,203 @@
+# Creats the core supporting the tastingswithtay-ui https://github.com/DaveVED/tastingswithtay-ui
+#
+# Using this pipeline.yaml temaplte, you will get a pipeline configuration with the following setup.
+#    1. ECR Repository for the image, needed for the pipeline.
+#    2. CodeBuild to Build and push the image to ECR.
+#    3. CodeDeploy to deploy teh image to ECS.
+#    4. CodePipeline to wrap the CICD.
+#    5. All required IAM & KMS, & Monitoring configurations.
+#
+# The pipleline, supports a reactjs applcaiont right now, but could be support any, if the user
+# change there buildspec.yml to build a different type of docker.
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Provision CICD to deploy a ReactJS application tastingswithtay to ECS.
+Parameters:
+  ENV:
+    Type: String
+    Default: "dev"
+    AllowedValues:
+      - "dev"
+      - "prod"
+    Description: "Environment (dev, test, prod)"
+  Project:
+    Type: String
+    Default: "myproject"
+    Description: "Project name"
+  Owner:
+    Type: String
+    Default: "DaveVED"
+    Description: "GitHub repository owner"
+  Repo:
+    Type: String
+    Default: "aws-3tier-react-bootstrap"
+    Description: "GitHub repository name"
+  Branch:
+    Type: String
+    Default: "develop"
+    Description: "GitHub repository branch name"
+
+Resources:
+  EcrKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: Key for encrypting ECR repository
+      KeyPolicy:
+        Version: "2012-10-17"
+        Id: key-default-1
+        Statement:
+          - Sid: Allow use of the key within the account
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action:
+              - kms:*
+            Resource: "*"
+  EcrRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub "${Project}-${ENV}-ui-ecr"
+      EncryptionConfiguration:
+        EncryptionType: KMS
+        KmsKey: !Ref EcrKey
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-ui-ecr"
+      RepositoryPolicyText: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:BatchCheckLayerAvailability"
+              ]
+            }
+          ]
+        }
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub "${Project}-${ENV}-ui-build"
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:4.0
+        PrivilegedMode: true
+        EnvironmentVariables: # Add this section
+          - Name: AWS_DEFAULT_REGION
+            Value: us-east-1
+          - Name: AWS_ACCOUNT_ID
+            Value: !Ref AWS::AccountId
+          - Name: IMAGE_REPO_NAME
+            Value: !Ref EcrRepository # Reference to the ECR repository resource
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: "buildspec.yml"
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-ui-build"
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodeBuildPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:*
+                  - s3:*
+                  - ecr:*
+                  - kms:*
+                Resource: "*"
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Sub "${Project}-${ENV}-ui-pipeline"
+      RoleArn: !GetAtt CodePipelineRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref CodePipelineBucket
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: GitHubSource
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: 1
+              OutputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                Owner: !Ref Owner
+                Repo: !Ref Repo
+                Branch: !Ref Branch
+                OAuthToken: "{{resolve:ssm:GITHUB_TOKEN}}"
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - Name: CodeBuild
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: 1
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+              Configuration:
+                ProjectName: !Ref CodeBuildProject
+              RunOrder: 1
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-ui-pipeline"
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodePipelinePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - codebuild:*
+                  - codepipeline:*
+                  - s3:*
+                  - ecr:*
+                  - iam:PassRole
+                Resource: "*"
+  CodePipelineBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${Project}-${ENV}-ui-pipeline-artifacts"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-ui-pipeline-artifacts"
