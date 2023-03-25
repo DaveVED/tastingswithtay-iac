@@ -58,3 +58,29 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-cluster"
+  EcsSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: ECS Security Group
+      VpcId: !ImportValue VPC
+  EcsSecurityGroupALBports:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref EcsSecurityGroup
+      IpProtocol: tcp
+      FromPort: 31000
+      ToPort: 61000
+      SourceSecurityGroupId: !Ref AlbSecurityGroup
+  AlbSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: ALB Security Group
+      VpcId: !ImportValue VPC
+  AlbSecurityGroupHTTPinbound:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref AlbSecurityGroup
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      CidrIp: 70.123.176.84/32
