@@ -2,11 +2,10 @@
 # Creats the core supporting the tastingswithtay-ui https://github.com/DaveVED/tastingswithtay-ui
 #
 # Using this pipeline.yaml temaplte, you will get a pipeline configuration with the following setup.
-#    1. ECR Repository for the image, needed for the pipeline.
-#    2. CodeBuild to Build and push the image to ECR.
-#    3. CodeDeploy to deploy teh image to ECS.
-#    4. CodePipeline to wrap the CICD.
-#    5. All required IAM & KMS, & Monitoring configurations.
+#    1. CodeBuild to Build and push the image to ECR.
+#    2. CodeDeploy to deploy teh image to ECS.
+#    3. CodePipeline to wrap the CICD.
+#    4. All required IAM & KMS, & Monitoring configurations.
 #
 # NOTE,
 #    - to run, you will need your GITHUB_TOKEN in a ssm parameter store called GITHUB_TOKEN.

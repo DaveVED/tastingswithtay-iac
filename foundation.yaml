@@ -54,7 +54,6 @@ Resources:
     Type: AWS::CloudFormation::Stack
     DependsOn:
       - Networking
-      - Pipeline
     Properties:
       TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/compute.yaml"
       Parameters:

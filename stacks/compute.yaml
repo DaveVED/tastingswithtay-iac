@@ -186,7 +186,6 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-ui-target-group"
-
   ECSServiceListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
