@@ -5,7 +5,7 @@
 #    1. Networking configuraitons.
 #    2. CICD process setup.
 #    3. Compute setup to expose a ReactJS application.
-#    4. Lmabda, APIGateway, and ELD connectibity.
+#    4. Lmabda, APIGateway, and ELD connevtivity.
 #
 # The CI process for this foundation runs on AWS CodePipeline. We wraped it in such
 # a way, so we only have to have one CodeDeploy, for the foundaiton, which then can
@@ -28,7 +28,7 @@ Resources:
   Networking:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/networking.yaml
+      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/networking.yaml"
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
