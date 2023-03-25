@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    S3_BUCKET: "tastingswithtay-cf-iac-common-components" # Replace with your S3 bucket name
+    S3_BUCKET: "tastingswithtay-cf-iac-common-components"
 
 phases:
   install:
@@ -15,13 +15,11 @@ phases:
   build:
     commands:
       - echo Entered the build phase...
+      - aws s3 sync stacks s3://${S3_BUCKET} # Upload all files under /stacks to the S3 bucket
   post_build:
     commands:
       - echo Entered the post_build phase...
       - echo Build completed on `date`
-      - ls -l
-      - aws s3 sync stacks s3://${S3_BUCKET} # Upload all files under /stacks to the S3 bucket
-
 artifacts:
   files:
     - "**/*"
