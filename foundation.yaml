@@ -26,6 +26,18 @@ Parameters:
     Type: String
     Default: "myproject"
     Description: "Project name"
+  Owner:
+    Type: String
+    Default: "DaveVED"
+    Description: "GitHub repository owner"
+  Repo:
+    Type: String
+    Default: "tastingswithtay-ui"
+    Description: "GitHub repository name"
+  Branch:
+    Type: String
+    Default: "develop"
+    Description: "GitHub repository branch name"
 Resources:
   Networking:
     Type: AWS::CloudFormation::Stack
@@ -34,3 +46,15 @@ Resources:
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
+  Pipeline:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - Networking
+    Properties:
+      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/pipeline.yaml"
+      Parameters:
+        ENV: !Ref ENV
+        Project: !Ref Project
+        Owner: !Ref Owner
+        Repo: !Ref Repo
+        Branch: !Ref Branch
