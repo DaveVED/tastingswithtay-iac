@@ -1,0 +1,25 @@
+version: 0.2
+
+env:
+  variables:
+    TEMP: "HELLOW WORLD"
+
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+      - aws --version
+  pre_build:
+    commands:
+      - echo Entered the pre_build phase...
+  build:
+    commands:
+      - echo Entered the build phase...
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+      - echo Build completed on `date`
+
+artifacts:
+  files:
+    - "**/*"
