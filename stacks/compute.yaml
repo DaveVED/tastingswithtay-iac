@@ -148,3 +148,48 @@ Resources:
           Subnets: !Split [",", !ImportValue PrivateSubnets]
           SecurityGroups: [!Ref EcsSecurityGroup]
           AssignPublicIp: ENABLED
+      LoadBalancers:
+        - ContainerName: !Sub "${Project}-${ENV}-ui"
+          ContainerPort: 3000
+          TargetGroupArn: !Ref EcsTargetGroup
+
+  EcsLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub "${Project}-${ENV}-ui-alb"
+      Scheme: internet-facing
+      Type: application
+      IpAddressType: ipv4
+      Subnets: !Split [",", !ImportValue PublicSubnets]
+      SecurityGroups: [!Ref AlbSecurityGroup]
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-ui-alb"
+  EcsTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      VpcId: !ImportValue VPC
+      Port: 80
+      Protocol: HTTP
+      TargetType: ip
+      HealthCheckIntervalSeconds: 180
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /
+      HealthCheckTimeoutSeconds: 30
+      HealthyThresholdCount: 5
+      UnhealthyThresholdCount: 5
+      Matcher:
+        HttpCode: "200-399"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-ui-target-group"
+
+  ECSServiceListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref EcsTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref EcsLoadBalancer
+      Port: 80
+      Protocol: HTTP
