@@ -203,3 +203,9 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-ui-pipeline-artifacts"
+Outputs:
+  EcrRepository:
+    Description: A reference to the created ECR
+    Value: !Ref EcrRepository
+    Export:
+      Name: EcrRepository
