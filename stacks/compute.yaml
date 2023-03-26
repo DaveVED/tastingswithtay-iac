@@ -152,10 +152,6 @@ Resources:
           Subnets: !Split [",", !ImportValue PrivateSubnets]
           SecurityGroups: [!Ref EcsSecurityGroup]
           AssignPublicIp: ENABLED
-      LoadBalancers:
-        - ContainerName: !Sub "${Project}-${ENV}-ui"
-          ContainerPort: 3000
-          TargetGroupArn: !Ref EcsTargetGroup
   EcsLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
