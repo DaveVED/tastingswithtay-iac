@@ -164,3 +164,30 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-ui-alb"
+  EcsTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      VpcId: !ImportValue VPC
+      Port: 80
+      Protocol: HTTP
+      TargetType: ip
+      HealthCheckIntervalSeconds: 180
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /
+      HealthCheckTimeoutSeconds: 30
+      HealthyThresholdCount: 5
+      UnhealthyThresholdCount: 5
+      Matcher:
+        HttpCode: "200"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-target-group"
+  ECSServiceListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref EcsTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref EcsLoadBalancer
+      Port: 80
+      Protocol: HTTP
