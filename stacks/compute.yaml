@@ -25,7 +25,7 @@ Parameters:
     Description: "Project name"
   TaskCount:
     Type: Number
-    Default: 2
+    Default: 1
     Description: "Number of ECS tasks to provision"
   ECRRepoUri:
     Type: String
