@@ -166,6 +166,7 @@ Resources:
   ECRVPCEDKR:
     Type: "AWS::EC2::VPCEndpoint"
     Properties:
+      VpcEndpointType: Interface
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.ecr.dkr"
       VpcId: !Ref VPC
       PrivateDnsEnabled: true
