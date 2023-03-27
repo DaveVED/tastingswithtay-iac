@@ -163,6 +163,19 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateRouteTable2
       SubnetId: !Ref PrivateSubnet2
+  VPCESecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: ECS Security Group
+      VpcId: !ImportValue VPC
+  VPCESecurityGroupHTTPinbound:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref VPCESecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      CidrIp: 10.0.0.0/16
   ECRVPCEDKR:
     Type: "AWS::EC2::VPCEndpoint"
     Properties:
@@ -171,7 +184,7 @@ Resources:
       VpcId: !Ref VPC
       PrivateDnsEnabled: true
       SecurityGroupIds:
-        - !GetAtt VPC.DefaultSecurityGroup
+        - !Ref VPCESecurityGroup
       SubnetIds:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
@@ -183,7 +196,7 @@ Resources:
       VpcId: !Ref VPC
       PrivateDnsEnabled: true
       SecurityGroupIds:
-        - !GetAtt VPC.DefaultSecurityGroup
+        - !Ref VPCESecurityGroup
       SubnetIds:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
@@ -195,7 +208,7 @@ Resources:
       VpcId: !Ref VPC
       PrivateDnsEnabled: true
       SecurityGroupIds:
-        - !GetAtt VPC.DefaultSecurityGroup
+        - !Ref VPCESecurityGroup
       SubnetIds:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
@@ -207,7 +220,7 @@ Resources:
       VpcId: !Ref VPC
       PrivateDnsEnabled: true
       SecurityGroupIds:
-        - !GetAtt VPC.DefaultSecurityGroup
+        - !Ref VPCESecurityGroup
       SubnetIds:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
