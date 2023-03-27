@@ -32,17 +32,13 @@ Parameters:
     Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/tastingswithtay-ui:latest"
     Description: "ECR Repo UI for docker."
 Resources:
-  CloudwatchLogsGroup:
-    Type: "AWS::Logs::LogGroup"
-    Properties:
-      LogGroupName: !Sub "${Project}-${ENV}-ECSLogGroup"
-      RetentionInDays: 14
   ECSCluster:
     Type: "AWS::ECS::Cluster"
     Properties:
       ClusterName: !Sub "${Project}-${ENV}-cluster"
       Configuration:
         ExecuteCommandConfiguration:
+          KmsKeyId: !Ref KmsKeyAlias
           Logging: OVERRIDE
           LogConfiguration:
             CloudWatchEncryptionEnabled: true
@@ -53,11 +49,20 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-cluster"
+
   EcsSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: ECS Security Group
       VpcId: !ImportValue VPC
+  EcsSecurityGroupHTTPinbound:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref EcsSecurityGroup
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      CidrIp: 70.123.176.84/32
   EcsSecurityGroupALBports:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
@@ -65,36 +70,32 @@ Resources:
       IpProtocol: tcp
       FromPort: 31000
       ToPort: 61000
-      SourceSecurityGroupId: !Ref AlbSecurityGroup
-  EcsSecurityGroupSelf:
-    Type: "AWS::EC2::SecurityGroupIngress"
-    Properties:
-      GroupId: !Ref EcsSecurityGroup
-      IpProtocol: -1
-      FromPort: -1
-      ToPort: -1
       SourceSecurityGroupId: !Ref EcsSecurityGroup
-  AlbSecurityGroup:
-    Type: "AWS::EC2::SecurityGroup"
+
+  KmsKey:
+    Type: "AWS::KMS::Key"
     Properties:
-      GroupDescription: ALB Security Group
-      VpcId: !ImportValue VPC
-  AlbSecurityGroupHTTPinbound:
-    Type: "AWS::EC2::SecurityGroupIngress"
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+
+  KmsKeyAlias:
+    Type: "AWS::KMS::Alias"
     Properties:
-      GroupId: !Ref AlbSecurityGroup
-      IpProtocol: tcp
-      FromPort: 80
-      ToPort: 80
-      CidrIp: 70.123.176.84/32
-  AlbSecurityGroupSelf:
-    Type: "AWS::EC2::SecurityGroupIngress"
+      AliasName: !Sub "alias/${Project}-${ENV}-ECSKey"
+      TargetKeyId: !Ref KmsKey
+
+  CloudwatchLogsGroup:
+    Type: "AWS::Logs::LogGroup"
     Properties:
-      GroupId: !Ref AlbSecurityGroup
-      IpProtocol: -1
-      FromPort: -1
-      ToPort: -1
-      SourceSecurityGroupId: !Ref AlbSecurityGroup
+      LogGroupName: !Sub "${Project}-${ENV}-ECSLogGroup"
+      RetentionInDays: 14
+
   ECSTaskExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -108,3 +109,99 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  ECSLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "${Project}-${ENV}-ecs-tasks"
+      RetentionInDays: 14
+
+  ECSTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub "${Project}-${ENV}"
+      Cpu: "512"
+      NetworkMode: "awsvpc"
+      Memory: "2048"
+      ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
+      RequiresCompatibilities:
+        - "FARGATE"
+      ContainerDefinitions:
+        - Name: !Sub "${Project}-${ENV}"
+          Image: !Ref ECRRepoUri
+          Cpu: "512"
+          Memory: "2048"
+          Essential: true
+          PortMappings:
+            - ContainerPort: 3000
+              HostPort: 3000
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudwatchLogsGroup
+              awslogs-region: !Ref "AWS::Region"
+              awslogs-stream-prefix: !Sub "${Project}-${ENV}"
+          HealthCheck:
+            Retries: 5
+            Interval: 120
+            Timeout: 60
+            StartPeriod: 300
+            Command: ["CMD-SHELL", "echo hello"]
+  ECSService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ECSCluster
+      ServiceName: !Sub "${Project}-${ENV}-service"
+      TaskDefinition: !Ref ECSTaskDefinition
+      LaunchType: "FARGATE"
+      DesiredCount: !Ref TaskCount
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets: !Split [",", !ImportValue PrivateSubnets]
+          SecurityGroups: [!Ref EcsSecurityGroup]
+          AssignPublicIp: ENABLED
+      LoadBalancers:
+        - ContainerName: !Sub "${Project}-${ENV}"
+          ContainerPort: 3000
+          TargetGroupArn: !Ref EcsTargetGroup
+
+  EcsLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub "${Project}-${ENV}-alb"
+      Scheme: internet-facing
+      Type: application
+      IpAddressType: ipv4
+      Subnets: !Split [",", !ImportValue PublicSubnets]
+      SecurityGroups: [!Ref EcsSecurityGroup]
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-alb"
+
+  EcsTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      VpcId: !ImportValue VPC
+      Port: 80
+      Protocol: HTTP
+      TargetType: ip
+      HealthCheckIntervalSeconds: 180
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /
+      HealthCheckTimeoutSeconds: 30
+      HealthyThresholdCount: 5
+      UnhealthyThresholdCount: 5
+      Matcher:
+        HttpCode: "200-399"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${Project}-${ENV}-target-group"
+
+  ECSServiceListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref EcsTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref EcsLoadBalancer
+      Port: 80
+      Protocol: HTTP
