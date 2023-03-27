@@ -181,4 +181,13 @@ Resources:
         HttpCode: "200-399"
       Tags:
         - Key: "Name"
-          Value: !Sub "${Project}-${ENV}-target-group"
+          Value: !Sub "${Project}-${ENV}-ui-target-group"
+  ECSServiceListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref EcsTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref EcsLoadBalancer
+      Port: 80
+      Protocol: HTTP
