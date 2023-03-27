@@ -21,7 +21,7 @@ Parameters:
     Description: "Environment (dev, prod)"
   Project:
     Type: String
-    Default: "myproject"
+    Default: "tastingswithtay"
     Description: "Project name"
   TaskCount:
     Type: Number
@@ -29,7 +29,7 @@ Parameters:
     Description: "Number of ECS tasks to provision"
   ECRRepoUri:
     Type: String
-    Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/myproject-dev-ui-ecr:latest"
+    Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/tastingswithtay-ui:latest"
     Description: "ECR Repo UI for docker."
 Resources:
   CloudwatchLogsGroup:

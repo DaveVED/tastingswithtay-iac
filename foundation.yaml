@@ -24,7 +24,7 @@ Parameters:
     Description: "Environment (dev, test, prod)"
   Project:
     Type: String
-    Default: "myproject"
+    Default: "tastingswithtay"
     Description: "Project name"
   Owner:
     Type: String
@@ -40,7 +40,7 @@ Parameters:
     Description: "GitHub repository branch name"
   ECRRepoUri:
     Type: String
-    Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/myproject-dev-ui-ecr:latest"
+    Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/tastingswithtay-ui:latest"
     Description: "ECR Repo UI for docker."
 Resources:
   Networking:
