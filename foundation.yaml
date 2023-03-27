@@ -50,3 +50,12 @@ Resources:
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
+  Compute:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - Networking
+    Properties:
+      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/compute.yaml"
+      Parameters:
+        ENV: !Ref ENV
+        Project: !Ref Project
