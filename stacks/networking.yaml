@@ -170,48 +170,7 @@ Resources:
       VpcId: !Ref VPC
       PrivateDnsEnabled: true
       SecurityGroupIds:
-        - !Ref VPCDefaultSecurityGroup
-      SubnetIds:
-        - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
-  ECRVPCEAPI:
-    Type: "AWS::EC2::VPCEndpoint"
-    Properties:
-      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ecr.api"
-      VpcId: !Ref VPC
-      PrivateDnsEnabled: true
-      SecurityGroupIds:
-        - !Ref VPCDefaultSecurityGroup
-      SubnetIds:
-        - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
-  S3GatewayEndpoint:
-    Type: AWS::EC2::VPCEndpoint
-    Properties:
-      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
-      VpcId: !Ref VPC
-      RouteTableIds:
-        - !Ref PrivateRouteTable1
-        - !Ref PrivateRouteTable2
-  DynamoDBVPCE:
-    Type: "AWS::EC2::VPCEndpoint"
-    Properties:
-      ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
-      VpcId: !Ref VPC
-      PrivateDnsEnabled: true
-      SecurityGroupIds:
-        - !Ref VPCDefaultSecurityGroup
-      SubnetIds:
-        - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
-  LambdaVPCE:
-    Type: "AWS::EC2::VPCEndpoint"
-    Properties:
-      ServiceName: !Sub "com.amazonaws.${AWS::Region}.lambda"
-      VpcId: !Ref VPC
-      PrivateDnsEnabled: true
-      SecurityGroupIds:
-        - !Ref VPCDefaultSecurityGroup
+        - !GettAtt VPC.DefaultSecurityGroup
       SubnetIds:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
