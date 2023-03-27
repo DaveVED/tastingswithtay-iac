@@ -170,7 +170,7 @@ Resources:
       VpcId: !Ref VPC
       PrivateDnsEnabled: true
       SecurityGroupIds:
-        - !GettAtt VPC.DefaultSecurityGroup
+        - !GetAtt VPC.DefaultSecurityGroup
       SubnetIds:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
