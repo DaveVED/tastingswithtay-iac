@@ -134,6 +134,11 @@ Resources:
     Properties:
       LogGroupName: !Sub "${Project}-${ENV}-ecs-tasks"
       RetentionInDays: 14
+  Dummy:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "${Project}-${ENV}-ecs-dummy"
+      RetentionInDays: 14
   ECSTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
