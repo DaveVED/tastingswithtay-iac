@@ -217,3 +217,14 @@ Resources:
       LoadBalancerArn: !Ref EcsLoadBalancer
       Port: 80
       Protocol: HTTP
+  DNS:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: tastingswithtay.com
+      Comment: Zone apex alias targeted to tastingswithtay.com LoadBalancer.
+      RecordSets:
+        - Name: tastingswithtay.com.
+          Type: A
+          AliasTarget:
+            HostedZoneId: !GetAtt "EcsLoadBalancer.CanonicalHostedZoneNameID"
+            DNSName: !GetAtt "EcsLoadBalancer.DNSName"
