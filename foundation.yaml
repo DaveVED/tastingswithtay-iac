@@ -34,18 +34,6 @@ Parameters:
     Type: String
     Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/tastingswithtay-ui:latest"
     Description: "ECR Repo UI for docker."
-  Owner:
-    Type: String
-    Default: "DaveVED"
-    Description: "GitHub repository owner"
-  Repo:
-    Type: String
-    Default: "tastingswithtay-ui"
-    Description: "GitHub repository name"
-  Branch:
-    Type: String
-    Default: "develop"
-    Description: "GitHub repository branch name"
 
 Resources:
   Networking:
