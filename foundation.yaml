@@ -79,4 +79,4 @@ Resources:
         Owner: !Ref Owner
         Repo: !Ref Repo
         Branch: !Ref Branch
-        TargetGroupArn: "arn:aws:elasticloadbalancing:us-east-1:007794960432:targetgroup/tastin-EcsTa-50N97VUXQJ8I/2cfe74303ab2804f"
+        TargetGroupArn: !ImportValue EcsAlbTargetGroupArn

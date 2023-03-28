@@ -15,7 +15,11 @@ phases:
   build:
     commands:
       - echo Entered the build phase...
-      - aws s3 sync stacks s3://${S3_BUCKET} # Upload all files under /stacks to the S3 bucket
+      # Packge the lambdas first, so the updated *.zips can be used in the CloudFormation Deploy Stage.
+      - echo `date`
+
+      # Package Templates, into a s3, so we can use Nested Stacks.
+      - aws s3 sync stacks s3://${S3_BUCKET}
   post_build:
     commands:
       - echo Entered the post_build phase...
