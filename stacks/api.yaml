@@ -70,14 +70,36 @@ Resources:
       RestApiId: !Ref ApiGateway
       ParentId: !GetAtt ApiGateway.RootResourceId
       PathPart: "v1"
-  ContentMethod:
+  ContentGetMethod:
     Type: "AWS::ApiGateway::Method"
     Properties:
       RestApiId: !Ref ApiGateway
       ResourceId: !Ref ContentResource
       HttpMethod: "GET"
-      AuthorizationType: "NONE"
+      AuthorizationType: "CUSTOM"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
       Integration:
         IntegrationHttpMethod: "POST"
         Type: "AWS_PROXY"
         Uri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContentLambda.Arn}/invocations"
+  ContentPostMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId: !Ref ApiGateway
+      ResourceId: !Ref ContentResource
+      HttpMethod: "POST"
+      AuthorizationType: "CUSTOM"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      Integration:
+        IntegrationHttpMethod: "POST"
+        Type: "AWS_PROXY"
+        Uri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContentLambda.Arn}/invocations"
+  ApiGatewayAuthorizer:
+    Type: "AWS::ApiGateway::Authorizer"
+    Properties:
+      RestApiId: !Ref ApiGateway
+      Name: "LambdaAuthorizer"
+      Type: "TOKEN"
+      IdentitySource: "Authorization"
+      AuthorizerUri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations"
+      AuthorizerResultTtlInSeconds: 300
