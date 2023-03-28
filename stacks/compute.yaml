@@ -220,7 +220,7 @@ Resources:
   DNS:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneName: tastingswithtay.com
+      HostedZoneId: "Z03417913PAYUETEFT28N"
       Comment: Zone apex alias targeted to tastingswithtay.com LoadBalancer.
       RecordSets:
         - Name: tastingswithtay.com.
