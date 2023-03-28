@@ -13,7 +13,7 @@ Parameters:
     Default: "tastingswithtay"
     Description: "Project name"
 Resources:
-  MyS3Bucket:
+  Assets:
     Type: "AWS::S3::Bucket"
     Properties:
       BucketName: !Sub "${Project}-${ENV}-assets"
@@ -22,10 +22,9 @@ Resources:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
-              KMSMasterKeyID: !Ref MyKmsKey
+              KMSMasterKeyID: !Ref s3Key
               SSEAlgorithm: aws:kms
-
-  MyKmsKey:
+  s3Key:
     Type: "AWS::KMS::Key"
     Properties:
       Description: "My KMS key for S3 encryption"
@@ -46,23 +45,22 @@ Resources:
               - "kms:GenerateDataKey*"
               - "kms:Decrypt"
             Resource: "*"
-
-  MyDynamoDBTable:
-    Type: "AWS::DynamoDB::Table"
+  RecipesTable:
+    Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub "${Project}-${ENV}-blogs"
+      TableName: !Sub "${Project}-${ENV}-content"
       AttributeDefinitions:
-        - AttributeName: ID
+        - AttributeName: recipeId
+          AttributeType: N
+        - AttributeName: sortKey
           AttributeType: S
-        - AttributeName: name
-          AttributeType: S
-        - AttributeName: shortDescription
-          AttributeType: S
-        - AttributeName: headerS3FileLocation
-          AttributeType: S
-        - AttributeName: landingActive
-          AttributeType: B
       KeySchema:
-        - AttributeName: ID
+        - AttributeName: recipeId
           KeyType: HASH
-      BillingMode: PAY_PER_REQUEST
+        - AttributeName: sortKey
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES

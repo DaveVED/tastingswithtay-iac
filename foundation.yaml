@@ -80,3 +80,12 @@ Resources:
         Repo: !Ref Repo
         Branch: !Ref Branch
         TargetGroupArn: !ImportValue EcsAlbTargetGroupArn
+  Storage:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - Networking
+    Properties:
+      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/storage.yaml"
+      Parameters:
+        ENV: !Ref ENV
+        Project: !Ref Project
