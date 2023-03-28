@@ -8,7 +8,7 @@
 #### Pipeline
 ## Tree
 ```
-% tree
+ % tree
 .
 ├── README.md
 ├── buildspec.yml
@@ -16,8 +16,11 @@
 ├── images
 │   └── temp.jpeg
 ├── lambda
-│   ├── dynamodb_wrapper.py
-│   └── tastingswithtay.py
+│   ├── auth
+│   │   └── auth.py
+│   └── content
+│       ├── content.py
+│       └── dynamodb_wrapper.py
 └── stacks
     ├── api.yaml
     ├── compute.yaml

@@ -15,11 +15,14 @@ phases:
   build:
     commands:
       - echo Entered the build phase...
-      # Packge the lambdas first, so the updated *.zips can be used in the CloudFormation Deploy Stage.
-      - echo `date`
+      # Package Lambda files, in a zip, to be used in the build stage.
+      - cd lambda
+      - for d in */; do zip -r "${d%/}.zip" "$d"; done # zip all subdirectories in lambda
+      - cd ..
 
       # Package Templates, into a s3, so we can use Nested Stacks.
       - aws s3 sync stacks s3://${S3_BUCKET}
+      - aws s3 sync lambda s3://${S3_BUCKET}/lambda # sync zipped lambda files to S3 bucket
   post_build:
     commands:
       - echo Entered the post_build phase...

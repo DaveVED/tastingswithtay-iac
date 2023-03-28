@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "API IaC for tastingswithtay"
+Parameters:
+  ENV:
+    Type: String
+    Default: "dev"
+    AllowedValues:
+      - "dev"
+      - "prod"
+    Description: "Environment (dev, prod)"
+  Project:
+    Type: String
+    Default: "tastingswithtay"
+    Description: "Project Name for resource naming."
+Resources:
+  AuthLambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName: !Sub "${Project}-${ENV}-lambda-auth"
+      Handler: "auth.auth.lambda_handler"
+      Runtime: "python3.9"
+      Code:
+        S3Bucket: "tastingswithtay-cf-iac-common-components"
+        S3Key: "lambda/auth.zip"
+      Role: !Ref LambdaExecutionRole
+      Timeout: 30
+  ContentLambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName: !Sub "${Project}-${ENV}-content-wrapper"
+      Handler: "content.content.lambda_handler"
+      Runtime: "python3.9"
+      Code:
+        S3Bucket: "tastingswithtay-cf-iac-common-components"
+        S3Key: "lambda/content.zip"
+      Role: !Ref LambdaExecutionRole
+      Timeout: 30
+  LambdaExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "LambdaExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "lambda.amazonaws.com"
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      Policies:
+        - PolicyName: "S3Access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "s3:Get*"
+                  - "s3:List*"
+                  - "s3:PutObject"
+                Resource: "arn:aws:s3:::tastingswithtay-cf-iac-common-components/*"
