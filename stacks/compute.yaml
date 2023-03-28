@@ -57,19 +57,40 @@ Resources:
   EcsSecurityGroupHTTPinbound:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
-      GroupId: !Ref ALBS
+      GroupId: !Ref EcsSecurityGroup
       IpProtocol: -1
       FromPort: -1
       ToPort: -1
       SourceSecurityGroupId: !Ref EcsSecurityGroup
-  EcsSecurityGroupALBports:
+  EcsSecurityGroupALB:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
       GroupId: !Ref EcsSecurityGroup
-      IpProtocol: tcp
-      FromPort: 31000
-      ToPort: 61000
-      SourceSecurityGroupId: !Ref EcsSecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      SourceSecurityGroupId: !Ref ALBSecurityGroup
+  ALBSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: ALB Security Group
+      VpcId: !ImportValue VPC
+  ALBSecurityGroupHTTPinbound:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref ALBSecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      SourceSecurityGroupId: !Ref ALBSecurityGroup
+  ALBSecurityGroupALB:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref ALBSecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      CidrIp: 70.123.176.84/32
   KmsKey:
     Type: "AWS::KMS::Key"
     Properties:
@@ -165,7 +186,7 @@ Resources:
       Type: application
       IpAddressType: ipv4
       Subnets: !Split [",", !ImportValue PublicSubnets]
-      SecurityGroups: [!Ref EcsSecurityGroup]
+      SecurityGroups: [!Ref ALBSecurityGroup]
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-alb"
