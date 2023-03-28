@@ -50,7 +50,7 @@ Resources:
   MyDynamoDBTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
-      TableName: my-table-name
+      TableName: !Sub "${Project}-${ENV}-blogs"
       AttributeDefinitions:
         - AttributeName: ID
           AttributeType: S
