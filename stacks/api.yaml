@@ -22,7 +22,7 @@ Resources:
       Code:
         S3Bucket: "tastingswithtay-cf-iac-common-components"
         S3Key: "lambda/auth.zip"
-      Role: !Ref LambdaExecutionRole
+      Role: !GetAtt LambdaExecutionRole.Arn
       Timeout: 30
   ContentLambda:
     Type: "AWS::Lambda::Function"
@@ -33,7 +33,7 @@ Resources:
       Code:
         S3Bucket: "tastingswithtay-cf-iac-common-components"
         S3Key: "lambda/content.zip"
-      Role: !Ref LambdaExecutionRole
+      Role: !GetAtt LambdaExecutionRole.Arn
       Timeout: 30
   LambdaExecutionRole:
     Type: "AWS::IAM::Role"
