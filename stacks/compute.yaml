@@ -227,7 +227,7 @@ Resources:
       HostedZoneId: !Ref HostedZoneId
       Comment: Zone apex alias targeted to tastingswithtay.com LoadBalancer.
       RecordSets:
-        - Name: dev-tastingswithtay.com.
+        - Name: dev.tastingswithtay.com.
           Type: A
           AliasTarget:
             HostedZoneId: !GetAtt "EcsLoadBalancer.CanonicalHostedZoneID"

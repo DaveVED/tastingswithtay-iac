@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  MyS3Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: my-bucket-name
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID: !Ref MyKmsKey
+              SSEAlgorithm: aws:kms
+
+  MyKmsKey:
+    Type: "AWS::KMS::Key"
+    Properties:
+      Description: "My KMS key for S3 encryption"
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "Enable IAM User Permissions"
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+          - Sid: "Enable S3 Bucket Permissions"
+            Effect: Allow
+            Principal:
+              Service: "s3.amazonaws.com"
+            Action:
+              - "kms:GenerateDataKey*"
+              - "kms:Decrypt"
+            Resource: "*"
+
+  MyDynamoDBTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: my-table-name
+      AttributeDefinitions:
+        - AttributeName: ID
+          AttributeType: S
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: shortDescription
+          AttributeType: S
+        - AttributeName: headerS3FileLocation
+          AttributeType: S
+        - AttributeName: landingActive
+          AttributeType: BOOL
+      KeySchema:
+        - AttributeName: ID
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
