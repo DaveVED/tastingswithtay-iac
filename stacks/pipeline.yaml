@@ -44,7 +44,9 @@ Parameters:
     Type: String
     Default: "tastingswithtay-ui"
     Description: "ECR Repo UI for docker."
-
+  TargetGroupArn:
+    Type: String
+    Description: "ARN of the Target Group associated with the ALB"
 Resources:
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
@@ -206,6 +208,9 @@ Resources:
       ECSServices:
         - ServiceName: !Sub "${Project}-${ENV}-service"
           ClusterName: !Sub "${Project}-${ENV}-cluster"
+      LoadBalancerInfo: # Add this section
+        TargetGroupInfoList:
+          - Name: !Ref TargetGroupArn
   CodeDeployServiceRole:
     Type: AWS::IAM::Role
     Properties:

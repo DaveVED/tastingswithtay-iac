@@ -232,3 +232,9 @@ Resources:
           AliasTarget:
             HostedZoneId: !GetAtt "EcsLoadBalancer.CanonicalHostedZoneID"
             DNSName: !GetAtt "EcsLoadBalancer.DNSName"
+Outputs:
+  EcsAlbTargetGroupArn:
+    Description: A reference to the created VPC
+    Value: !GetAtt EcsTargetGroup.TargetGroupArn
+    Export:
+      Name: EcsAlbTargetGroupArn

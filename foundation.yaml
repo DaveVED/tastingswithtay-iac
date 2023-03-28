@@ -70,6 +70,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     DependsOn:
       - Networking
+      - Compute
     Properties:
       TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/pipeline.yaml"
       Parameters:
@@ -78,3 +79,4 @@ Resources:
         Owner: !Ref Owner
         Repo: !Ref Repo
         Branch: !Ref Branch
+        TargetGroupArn: !ImportValue EcsAlbTargetGroupArn
