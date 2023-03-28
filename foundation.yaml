@@ -72,14 +72,3 @@ Resources:
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
-  Pipeline:
-    Type: AWS::CloudFormation::Stack
-    DependsOn:
-      - Networking
-      - Compute
-    Properties:
-      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/pipeline.yaml"
-      Parameters:
-        ENV: !Ref ENV
-        Project: !Ref Project
-        TargetGroupArn: !ImportValue EcsAlbTargetGroupArn
