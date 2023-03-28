@@ -12,11 +12,6 @@ Parameters:
     Type: String
     Default: "tastingswithtay"
     Description: "Project Name for resource naming."
-  SecretName:
-    Type: String
-    Description: The name of the AWS Secrets Manager secret to store the API key
-    Default: "/tastingswithtay/apikey"
-
 Resources:
   AuthLambda:
     Type: "AWS::Lambda::Function"
