@@ -12,6 +12,7 @@ Parameters:
     Type: String
     Default: "tastingswithtay"
     Description: "Project Name for resource naming."
+
 Resources:
   AuthLambda:
     Type: "AWS::Lambda::Function"
@@ -67,19 +68,16 @@ Resources:
     Type: "AWS::ApiGateway::Resource"
     Properties:
       RestApiId: !Ref ApiGateway
-      ParentId: !Ref AuthResource
-      PathPart: "content"
-  AuthLambdaAuthorizerPermission:
-    Type: "AWS::Lambda::Permission"
+      ParentId: !GetAtt ApiGateway.RootResourceId
+      PathPart: "v1"
+  ContentMethod:
+    Type: "AWS::ApiGateway::Method"
     Properties:
-      FunctionName: !Ref AuthLambdaAuthorizer
-      Action: "lambda:InvokeFunction"
-      Principal: "apigateway.amazonaws.com"
-      SourceArn: !Sub "arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/POST/v1/auth"
-  ContentLambdaPermission:
-    Type: "AWS::Lambda::Permission"
-    Properties:
-      FunctionName: !Ref ContentLambda
-      Action: "lambda:InvokeFunction"
-      Principal: "apigateway.amazonaws.com"
-      SourceArn: !Sub "arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/POST/v1/content"
+      RestApiId: !Ref ApiGateway
+      ResourceId: !Ref ContentResource
+      HttpMethod: "GET"
+      AuthorizationType: "NONE"
+      Integration:
+        IntegrationHttpMethod: "POST"
+        Type: "AWS_PROXY"
+        Uri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContentLambda.Arn}/invocations"
