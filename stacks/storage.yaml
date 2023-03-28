@@ -45,17 +45,17 @@ Resources:
               - "kms:GenerateDataKey*"
               - "kms:Decrypt"
             Resource: "*"
-  RecipesTable:
+  ContentTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub "${Project}-${ENV}-content"
       AttributeDefinitions:
-        - AttributeName: recipeId
-          AttributeType: N
+        - AttributeName: contentId
+          AttributeType: S
         - AttributeName: sortKey
           AttributeType: S
       KeySchema:
-        - AttributeName: recipeId
+        - AttributeName: contentId
           KeyType: HASH
         - AttributeName: sortKey
           KeyType: RANGE
