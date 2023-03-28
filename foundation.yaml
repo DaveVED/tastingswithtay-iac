@@ -82,7 +82,4 @@ Resources:
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
-        Owner: !Ref Owner
-        Repo: !Ref Repo
-        Branch: !Ref Branch
         TargetGroupArn: !ImportValue EcsAlbTargetGroupArn
