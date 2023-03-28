@@ -34,6 +34,19 @@ Parameters:
     Type: String
     Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/tastingswithtay-ui:latest"
     Description: "ECR Repo UI for docker."
+  Owner:
+    Type: String
+    Default: "DaveVED"
+    Description: "GitHub repository owner"
+  Repo:
+    Type: String
+    Default: "tastingswithtay-ui"
+    Description: "GitHub repository name"
+  Branch:
+    Type: String
+    Default: "develop"
+    Description: "GitHub repository branch name"
+
 Resources:
   Networking:
     Type: AWS::CloudFormation::Stack
@@ -53,3 +66,15 @@ Resources:
         Project: !Ref Project
         ECRRepoUri: !Ref ECRRepoUri
         TaskCount: !Ref TaskCount
+  DevPipeline:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - Networking
+    Properties:
+      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/pipeline.yaml"
+      Parameters:
+        ENV: !Ref ENV
+        Project: !Ref Project
+        Owner: !Ref Owner
+        Repo: !Ref Repo
+        Branch: !Ref Branch
