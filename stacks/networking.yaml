@@ -167,7 +167,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: ECS Security Group
-      VpcId: !ImportValue VPC
+      VpcId: !Ref VPC
   VPCESecurityGroupHTTPinbound:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
