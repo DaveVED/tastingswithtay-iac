@@ -226,5 +226,5 @@ Resources:
         - Name: tastingswithtay.com.
           Type: A
           AliasTarget:
-            HostedZoneId: !GetAtt "EcsLoadBalancer.CanonicalHostedZoneNameID"
+            HostedZoneId: !GetAtt "EcsLoadBalancer.CanonicalHostedZoneID"
             DNSName: !GetAtt "EcsLoadBalancer.DNSName"
