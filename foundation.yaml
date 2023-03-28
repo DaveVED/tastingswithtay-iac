@@ -26,12 +26,40 @@ Parameters:
     Type: String
     Default: "tastingswithtay"
     Description: "Project name"
+  TaskCount:
+    Type: Number
+    Default: 1
+    Description: "Number of ECS tasks to provision"
+  ECRRepoUri:
+    Type: String
+    Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/tastingswithtay-ui:latest"
+    Description: "ECR Repo UI for docker."
 
 Resources:
   Networking:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/networking.yaml"
+      Parameters:
+        ENV: !Ref ENV
+        Project: !Ref Project
+  Compute:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - Networking
+    Properties:
+      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/compute.yaml"
+      Parameters:
+        ENV: !Ref ENV
+        Project: !Ref Project
+        ECRRepoUri: !Ref ECRRepoUri
+        TaskCount: !Ref TaskCount
+  Storage:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - Networking
+    Properties:
+      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/storage.yaml"
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
