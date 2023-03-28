@@ -49,7 +49,6 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-cluster"
-
   EcsSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
@@ -58,11 +57,11 @@ Resources:
   EcsSecurityGroupHTTPinbound:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
-      GroupId: !Ref EcsSecurityGroup
-      IpProtocol: tcp
-      FromPort: 80
-      ToPort: 80
-      CidrIp: 70.123.176.84/32
+      GroupId: !Ref ALBS
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      SourceSecurityGroupId: !Ref EcsSecurityGroup
   EcsSecurityGroupALBports:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
@@ -71,7 +70,6 @@ Resources:
       FromPort: 31000
       ToPort: 61000
       SourceSecurityGroupId: !Ref EcsSecurityGroup
-
   KmsKey:
     Type: "AWS::KMS::Key"
     Properties:
@@ -83,19 +81,16 @@ Resources:
               AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
             Action: "kms:*"
             Resource: "*"
-
   KmsKeyAlias:
     Type: "AWS::KMS::Alias"
     Properties:
       AliasName: !Sub "alias/${Project}-${ENV}-ECSKey"
       TargetKeyId: !Ref KmsKey
-
   CloudwatchLogsGroup:
     Type: "AWS::Logs::LogGroup"
     Properties:
       LogGroupName: !Sub "${Project}-${ENV}-ECSLogGroup"
       RetentionInDays: 14
-
   ECSTaskExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -162,7 +157,6 @@ Resources:
         - ContainerName: !Sub "${Project}-${ENV}"
           ContainerPort: 3000
           TargetGroupArn: !Ref EcsTargetGroup
-
   EcsLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -175,7 +169,6 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-alb"
-
   EcsTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -194,7 +187,6 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${Project}-${ENV}-target-group"
-
   ECSServiceListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
