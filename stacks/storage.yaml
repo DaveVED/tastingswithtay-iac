@@ -1,9 +1,22 @@
 AWSTemplateFormatVersion: "2010-09-09"
+Description: "Storage solutions for tastingswithtay"
+Parameters:
+  ENV:
+    Type: String
+    Default: "dev"
+    AllowedValues:
+      - "dev"
+      - "prod"
+    Description: "Environment (dev, prod)"
+  Project:
+    Type: String
+    Default: "tastingswithtay"
+    Description: "Project name"
 Resources:
   MyS3Bucket:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: my-bucket-name
+      BucketName: !Sub "${Project}-${ENV}-assets"
       VersioningConfiguration:
         Status: Enabled
       BucketEncryption:
@@ -48,7 +61,7 @@ Resources:
         - AttributeName: headerS3FileLocation
           AttributeType: S
         - AttributeName: landingActive
-          AttributeType: BOOL
+          AttributeType: B
       KeySchema:
         - AttributeName: ID
           KeyType: HASH

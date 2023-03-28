@@ -13,7 +13,7 @@
 # deploy the ohter stacks.
 ######################################################################################
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "Networking Configurations for tastingswithtay"
+Description: "Foundational Configurations for tastingswithtay"
 Parameters:
   ENV:
     Type: String
