@@ -31,6 +31,10 @@ Parameters:
     Type: String
     Default: "007794960432.dkr.ecr.us-east-1.amazonaws.com/tastingswithtay-ui:latest"
     Description: "ECR Repo UI for docker."
+  HostedZoneId:
+    Type: String
+    Default: "Z03417913PAYUETEFT28N"
+    Description: "Hosted Zone ID, to map to ALB."
 Resources:
   ECSCluster:
     Type: "AWS::ECS::Cluster"
@@ -220,10 +224,10 @@ Resources:
   DNS:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneId: "Z03417913PAYUETEFT28N"
+      HostedZoneId: !Ref HostedZoneId
       Comment: Zone apex alias targeted to tastingswithtay.com LoadBalancer.
       RecordSets:
-        - Name: tastingswithtay.com.
+        - Name: dev-tastingswithtay.com.
           Type: A
           AliasTarget:
             HostedZoneId: !GetAtt "EcsLoadBalancer.CanonicalHostedZoneID"
