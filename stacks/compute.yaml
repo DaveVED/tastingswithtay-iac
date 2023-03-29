@@ -172,8 +172,6 @@ Resources:
       ServiceName: !Sub "${Project}-${ENV}-service"
       TaskDefinition: !Ref ECSTaskDefinition
       LaunchType: "FARGATE"
-      DeploymentController:
-        Type: CODE_DEPLOY
       DesiredCount: !Ref TaskCount
       NetworkConfiguration:
         AwsvpcConfiguration:
