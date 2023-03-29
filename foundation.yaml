@@ -43,7 +43,7 @@ Resources:
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
-  Compute:
+  ComputeStack:
     Type: AWS::CloudFormation::Stack
     DependsOn:
       - Networking
