@@ -81,7 +81,8 @@ Resources:
     Type: AWS::ApiGateway::Method
     Properties:
       ApiKeyRequired: false
-      AuthorizationType: NONE
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref ApiGatewayAuthorizer
       HttpMethod: GET
       Integration:
         ConnectionType: INTERNET
@@ -127,7 +128,14 @@ Resources:
     Type: AWS::ApiGateway::Deployment
     DependsOn: ApiGatewayMethodContentGet
     Properties:
-      Description: Lambda API Deployment
+      Description:
+        !Join [
+          "",
+          [
+            "Lambda API Deployment - ",
+            !Select [0, !Split ["-", !Ref "AWS::StackId"]],
+          ],
+        ]
       RestApiId: !Ref ApiGateway
   ApiGatewayDomainName:
     Type: AWS::ApiGateway::DomainName
@@ -156,3 +164,13 @@ Resources:
       DomainName: !Ref ApiGatewayDomainName
       RestApiId: !Ref ApiGateway
       Stage: !Ref ApiGatewayStage
+  ApiGatewayAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      AuthorizerCredentials: !GetAtt ApiGatewayIamRole.Arn
+      AuthorizerResultTtlInSeconds: 300
+      AuthorizerUri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations"
+      IdentitySource: method.request.header.Authorization
+      Name: !Sub "${Project}-${ENV}-authorizer"
+      RestApiId: !Ref ApiGateway
+      Type: TOKEN
