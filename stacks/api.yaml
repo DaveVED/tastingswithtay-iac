@@ -164,6 +164,7 @@ Resources:
       DomainName: !Ref ApiGatewayDomainName
       RestApiId: !Ref ApiGateway
       Stage: !Ref ApiGatewayStage
+      Path: !Ref ApiGatewayStage
   ApiGatewayAuthorizer:
     Type: AWS::ApiGateway::Authorizer
     Properties:
