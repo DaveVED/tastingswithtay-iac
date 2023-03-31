@@ -16,6 +16,10 @@ Parameters:
     Type: String
     Default: "Z03417913PAYUETEFT28N"
     Description: "Hosted Zone ID, to map to ALB."
+  AcmCertificateArn:
+    Type: String
+    Default: "arn:aws:acm:us-east-1:007794960432:certificate/0c4ef098-5199-4fce-b8cc-04f334c2ba1a"
+    Description: "The ARN of the ACM certificate for the custom domain."
 Resources:
   AuthLambda:
     Type: "AWS::Lambda::Function"
@@ -131,3 +135,28 @@ Resources:
     Properties:
       Description: Lambda API Deployment
       RestApiId: !Ref ApiGateway
+  ApiGatewayDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Sub "${ENV}-internal-api.tastingswithtay.com"
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      RegionalCertificateArn: !Ref AcmCertificateArn
+  APIDNS:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Comment: Zone apex alias targeted to tastingswithtay.com LoadBalancer.
+      RecordSets:
+        - Name: !Sub "${ENV}-api.tastingswithtay."
+          Type: A
+          AliasTarget:
+            HostedZoneId: !GetAtt ApiGatewayDomainName.RegionalHostedZoneId
+            DNSName: !GetAtt ApiGatewayDomainName.RegionalDomainName
+  ApiGatewayBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !Ref ApiGatewayDomainName
+      RestApiId: !Ref ApiGateway
+      Stage: !Ref ApiGatewayStage
