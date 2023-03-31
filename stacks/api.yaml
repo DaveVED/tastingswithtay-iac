@@ -146,7 +146,7 @@ Resources:
   ApiGatewayAliasRecord:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneName: !Ref HostedZoneId
+      HostedZoneId: !Ref HostedZoneId
       RecordSets:
         - Name: !Sub "${ENV}-api.tastingswithtay.com."
           Type: A
