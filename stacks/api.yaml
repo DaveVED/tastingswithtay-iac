@@ -155,3 +155,4 @@ Resources:
             DNSName: !GetAtt ApiGatewayDomainName.RegionalDomainName
             EvaluateTargetHealth: true
           SetIdentifier: ApiGatewayAliasRecord
+          Region: us-east-1
