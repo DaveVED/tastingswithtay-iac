@@ -64,3 +64,15 @@ Resources:
     Type: "AWS::ApiGateway::RestApi"
     Properties:
       Name: !Sub "${Project}-${ENV}-api"
+  ApiGatewayRootResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt ApiGateway.RootResourceId
+      PathPart: "v1"
+      RestApiId: !Ref ApiGateway
+  ApiGatewayContentResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt ApiGatewayRootResource.RootResourceId
+      PathPart: "content"
+      RestApiId: !Ref ApiGatewayRootResource
