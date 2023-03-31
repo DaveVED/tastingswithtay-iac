@@ -154,9 +154,3 @@ Resources:
           AliasTarget:
             HostedZoneId: !GetAtt ApiGatewayDomainName.RegionalHostedZoneId
             DNSName: !GetAtt ApiGatewayDomainName.RegionalDomainName
-  ApiGatewayBasePathMapping:
-    Type: AWS::ApiGateway::BasePathMapping
-    Properties:
-      DomainName: !Ref ApiGatewayDomainName
-      RestApiId: !Ref ApiGateway
-      Stage: !Ref ApiGatewayStage
