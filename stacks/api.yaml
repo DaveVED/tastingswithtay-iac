@@ -150,3 +150,9 @@ Resources:
             EvaluateTargetHealth: true
           SetIdentifier: ApiGatewayAliasRecord
           Region: us-east-1
+  APIBaseMapping:
+    Type: "AWS::ApiGateway::BasePathMapping"
+    Properties:
+      DomainName: !Ref ApiGatewayDomainName
+      RestApiId: !Ref ApiGateway
+      Stage: !Ref ApiGatewayStage
