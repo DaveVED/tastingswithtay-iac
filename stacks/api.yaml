@@ -138,8 +138,19 @@ Resources:
   ApiGatewayDomainName:
     Type: AWS::ApiGateway::DomainName
     Properties:
-      DomainName: !Sub "${ENV}-internal-api.tastingswithtay.com"
+      DomainName: !Sub "${ENV}-api.tastingswithtay.com"
       EndpointConfiguration:
         Types:
           - REGIONAL
       RegionalCertificateArn: !Ref AcmCertificateArn
+  APIGWDNS:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Comment: Zone apex alias targeted to tastingswithtay.com API GW.
+      RecordSets:
+        - Name: !Sub "${ENV}-api.tastingswithtay.com."
+          Type: A
+          AliasTarget:
+            HostedZoneId: !GetAtt ApiGatewayDomainName.DistributionHostedZoneId
+            DNSName: !GetAtt ApiGatewayDomainName.DistributionDomainName
