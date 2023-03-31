@@ -85,7 +85,7 @@ Resources:
       Integration:
         ConnectionType: INTERNET
         Credentials: !GetAtt ApiGatewayIamRole.Arn
-        IntegrationHttpMethod: GET
+        IntegrationHttpMethod: POST
         PassthroughBehavior: WHEN_NO_MATCH
         TimeoutInMillis: 29000
         Type: AWS_PROXY
