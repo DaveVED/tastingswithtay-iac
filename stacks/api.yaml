@@ -164,11 +164,9 @@ Resources:
       DomainName: !Ref ApiGatewayDomainName
       RestApiId: !Ref ApiGateway
       Stage: !Ref ApiGatewayStage
-      Path: !Ref ApiGatewayStage
   ApiGatewayAuthorizer:
     Type: AWS::ApiGateway::Authorizer
     Properties:
-      AuthorizerCredentials: !GetAtt ApiGatewayIamRole.Arn
       AuthorizerResultTtlInSeconds: 300
       AuthorizerUri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations"
       IdentitySource: method.request.header.Authorization
