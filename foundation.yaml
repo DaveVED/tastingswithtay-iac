@@ -63,7 +63,7 @@ Resources:
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
-  APIStack:
+  APIStackV2:
     Type: AWS::CloudFormation::Stack
     DependsOn:
       - Networking
