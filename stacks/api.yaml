@@ -115,3 +115,16 @@ Resources:
               - Effect: "Allow"
                 Action: "lambda:*"
                 Resource: !GetAtt ContentLambda.Arn
+  ApiGatewayStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId: !Ref ApiGatewayDeployment
+      Description: Lambda API Stage v1
+      RestApiId: !Ref ApiGateway
+      StageName: "v1"
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: ApiGatewayMethodContentGet
+    Properties:
+      Description: Lambda API Deployment
+      RestApiId: !Ref ApiGateway
