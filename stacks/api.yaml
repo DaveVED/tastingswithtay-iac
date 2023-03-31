@@ -131,12 +131,3 @@ Resources:
     Properties:
       Description: Lambda API Deployment
       RestApiId: !Ref ApiGateway
-  APIGatewayDNSRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref HostedZoneId
-      Name: dev-api.tastingswithtay.com.
-      Type: CNAME
-      TTL: "300"
-      ResourceRecords:
-        - !Sub "${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com"
