@@ -67,6 +67,14 @@ Resources:
                   - "s3:List*"
                   - "s3:PutObject"
                 Resource: "arn:aws:s3:::tastingswithtay-cf-iac-common-components/*"
+        - PolicyName: "ApiGatewayInvoke"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "execute-api:Invoke"
+                Resource: "*"
   ApiGateway:
     Type: "AWS::ApiGateway::RestApi"
     Properties:

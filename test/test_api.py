@@ -5,10 +5,10 @@ import requests
 access_token = "12345678"
 
 # Construct the request headers with the Authorization header
-headers = {"Authorization": f"Bearer {access_token}"}
+headers = {"Authorization": f"{access_token}"}
 
 # Make the API request
 response = requests.get(
-    "https://dev-api.tastingswithtay.com/v1/content", headers=headers
+    "https://wzaygu7rgf.execute-api.us-east-1.amazonaws.com/v1/content", headers=headers
 )
-print(response.json())
+print(response.text)

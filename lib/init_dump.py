@@ -4,6 +4,8 @@ import os
 import json
 import boto3
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
 BUCKET_NAME = "tastingswithtay-dev-assets"
 
 client = boto3.client("s3", region_name="us-east-1")
@@ -17,8 +19,8 @@ def load_init_data():
 
 
 def populate_init_data(data):
-    for input in data:
-        print(input)
+    for file in os.listdir(f"{dir_path}/assests/dummy"):
+        print(file)
 
 
 def main():
