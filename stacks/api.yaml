@@ -118,7 +118,7 @@ Resources:
             method.response.header.Access-Control-Allow-Headers: true
             method.response.header.Access-Control-Allow-Methods: true
             method.response.header.Access-Control-Allow-Origin: true
-  ApiGatewayMethodContentGet:
+  ApiGatewayMethodContentIdGet:
     Type: AWS::ApiGateway::Method
     Properties:
       ApiKeyRequired: false
@@ -138,12 +138,20 @@ Resources:
             ResponseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"
       OperationName: "lambda"
-      ResourceId: !Ref ApiGatewayContentResource
+      RequestParameters:
+        method.request.path.contentId: true
+      ResourceId: !Ref ApiGatewayContentIdResource
       RestApiId: !Ref ApiGateway
       MethodResponses:
         - StatusCode: 200
           ResponseParameters:
             method.response.header.Access-Control-Allow-Origin: true
+  ApiGatewayContentIdResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref ApiGatewayContentResource
+      PathPart: "{contentId}"
+      RestApiId: !Ref ApiGateway
   ApiGatewayIamRole:
     Type: AWS::IAM::Role
     Properties:

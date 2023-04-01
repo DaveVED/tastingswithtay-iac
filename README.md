@@ -15,11 +15,6 @@ The IaC is supporting using AWS `CI` features, the functionality incudles.
 
 You can provison this pipeline uisng the `./lib/pipeline-iac/iac_pipeline.yaml` file, if you'd like.
 
-#### How the Foundation Components work
-#### Branching Stratergy
-#### Supporting your react pipeline
-
-
 ## Bootstraping the Data
 When the infastruce is first spun up, you should bootstrap the `dynamdodb` database, and `s3` asset bucket with the intial data needed to support basic functionality. The can be done using the `init_dump.py` script. This will.
 
