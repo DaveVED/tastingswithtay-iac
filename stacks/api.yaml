@@ -146,11 +146,18 @@ Resources:
         - StatusCode: 200
           ResponseParameters:
             method.response.header.Access-Control-Allow-Origin: true
-  ApiGatewayContentIdResource:
+  ApiGatewayContentActiveResource:
     Type: AWS::ApiGateway::Resource
     Properties:
       ParentId: !Ref ApiGatewayContentResource
-      PathPart: "{contentId}"
+      PathPart: "active"
+      RestApiId: !Ref ApiGateway
+
+  ApiGatewayContentTypesResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref ApiGatewayContentResource
+      PathPart: "types"
       RestApiId: !Ref ApiGateway
   ApiGatewayMethodContentActiveGet:
     Type: AWS::ApiGateway::Method
@@ -182,12 +189,6 @@ Resources:
         - StatusCode: 200
           ResponseParameters:
             method.response.header.Access-Control-Allow-Origin: true
-  ApiGatewayContentActiveResource:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId: !GetAtt ApiGateway.RootResourceId
-      PathPart: "content"
-      RestApiId: !Ref ApiGateway
   ApiGatewayIamRole:
     Type: AWS::IAM::Role
     Properties:
