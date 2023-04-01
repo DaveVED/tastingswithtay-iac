@@ -20,6 +20,10 @@ Parameters:
     Type: String
     Default: "arn:aws:acm:us-east-1:007794960432:certificate/0c4ef098-5199-4fce-b8cc-04f334c2ba1a"
     Description: "The ARN of the ACM certificate for the custom domain."
+  APIVersion:
+    Type: String
+    Default: "v1"
+    Description: "Current API Version."
 Resources:
   AuthLambda:
     Type: "AWS::Lambda::Function"
@@ -200,11 +204,11 @@ Resources:
             HostedZoneId: !GetAtt ApiGatewayDomainName.RegionalHostedZoneId
             DNSName: !GetAtt ApiGatewayDomainName.RegionalDomainName
             EvaluateTargetHealth: true
-          SetIdentifier: ApiGatewayAliasRecord
           Region: us-east-1
   APIBaseMapping:
     Type: "AWS::ApiGateway::BasePathMapping"
     Properties:
+      BasePath: !Ref APIVersion
       DomainName: !Ref ApiGatewayDomainName
       RestApiId: !Ref ApiGateway
       Stage: !Ref ApiGatewayStage
