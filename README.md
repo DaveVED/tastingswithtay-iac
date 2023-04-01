@@ -5,6 +5,21 @@ Resources supporting the management and creation of the infrasture for `tastings
 This `IaC` could also be forked, and used to support any `3 tier` application you wanted to host on `AWS`.
 
 
+## CI
+The IaC is supporting using AWS `CI` features, the functionality incudles.
+
+- [x] CodePipeline as a wrapper for the IaC pipeline.
+- [x] GitHub source (need to have tokens configured), with a hook setup for pushes to the a `develop` branch.
+- [x] CodeBuild to package build & package the 'lambads' and the `IaC` foundational components.
+- [x] Deploy stage to create/update the CloudFormation templates.
+
+You can provison this pipeline uisng the `./lib/pipeline-iac/iac_pipeline.yaml` file, if you'd like.
+
+#### How the Foundation Components work
+#### Branching Stratergy
+#### Supporting your react pipeline
+
+
 ## Bootstraping the Data
 When the infastruce is first spun up, you should bootstrap the `dynamdodb` database, and `s3` asset bucket with the intial data needed to support basic functionality. The can be done using the `init_dump.py` script. This will.
 
@@ -17,7 +32,7 @@ The lmabda authoier works with a `Authorization` token passed it it via a header
 - [x] Pull down the `clientId` header.
 - [x] Serach `secertsmanager` for that token, if found validate it against the `Authorization` passed in. If the token does not match the clients token or is not passed in, access to API will be denited.
 
-To create a client and a token you can leverage the `./lib/create_api_keys.py` cli utlity. This will.
+To create a client and a token you can leverage the `./lib/scripts/create_api_keys.py` cli utlity. This will.
 
 - [x] extract the name passed in via cli.
 - [x] generate an api key.

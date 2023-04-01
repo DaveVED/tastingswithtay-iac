@@ -63,6 +63,7 @@ Resources:
         - "arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator"
         - "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
         - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+        - "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
       Policies:
         - PolicyName: "S3Access"
           PolicyDocument:
