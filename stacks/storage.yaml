@@ -54,11 +54,24 @@ Resources:
           AttributeType: S
         - AttributeName: sortKey
           AttributeType: S
+        - AttributeName: landing
+          AttributeType: S
+        - AttributeName: active
+          AttributeType: S
       KeySchema:
         - AttributeName: contentId
           KeyType: HASH
         - AttributeName: sortKey
           KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: LandingActiveIndex
+          KeySchema:
+            - AttributeName: landing
+              KeyType: HASH
+            - AttributeName: active
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES

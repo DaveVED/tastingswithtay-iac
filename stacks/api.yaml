@@ -152,6 +152,42 @@ Resources:
       ParentId: !Ref ApiGatewayContentResource
       PathPart: "{contentId}"
       RestApiId: !Ref ApiGateway
+  ApiGatewayMethodContentActiveGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      HttpMethod: GET
+      Integration:
+        ConnectionType: INTERNET
+        Credentials: !GetAtt ApiGatewayIamRole.Arn
+        IntegrationHttpMethod: POST
+        PassthroughBehavior: WHEN_NO_MATCH
+        TimeoutInMillis: 29000
+        Type: AWS_PROXY
+        Uri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContentLambda.Arn}/invocations"
+        RequestParameters:
+          integration.request.querystring.active: "'true'"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      OperationName: "lambda"
+      RequestParameters:
+        method.request.querystring.active: true
+      ResourceId: !Ref ApiGatewayContentActiveResource
+      RestApiId: !Ref ApiGateway
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+  ApiGatewayContentActiveResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt ApiGateway.RootResourceId
+      PathPart: "content"
+      RestApiId: !Ref ApiGateway
   ApiGatewayIamRole:
     Type: AWS::IAM::Role
     Properties:

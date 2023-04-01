@@ -25,7 +25,6 @@ def get_secret(secret_name: str, region_name: Optional[str] = "us-east-1") -> st
 
 def main():
     # Replace with your actual access token
-    print("HERE")
     access_token = get_secret("tastingswithtay-api-key", "us-east-1")
 
     # Construct the request headers with the Authorization header
@@ -33,7 +32,8 @@ def main():
 
     # Make the API request
     response = requests.get(
-        "https://dev-api.tastingswithtay.com/v1/content/1234", headers=headers
+        "https://dev-api.tastingswithtay.com/v1/content/9f22ea12-c858-4bca-832e-cd477aa61e6e",
+        headers=headers,
     )
     print(response.text)
 
