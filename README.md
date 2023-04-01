@@ -17,7 +17,7 @@ The lmabda authoier works with a `Authorization` token passed it it via a header
 - [x] Pull down the `clientId` header.
 - [x] Serach `secertsmanager` for that token, if found validate it against the `Authorization` passed in. If the token does not match the clients token or is not passed in, access to API will be denited.
 
-To create a client and a token you can leverage the `create_api_keys.py` cli utlity. This will.
+To create a client and a token you can leverage the `./lib/create_api_keys.py` cli utlity. This will.
 
 - [x] extract the name passed in via cli.
 - [x] generate an api key.
@@ -28,3 +28,5 @@ Check it out.
 xxx
 ```
 
+## Testing Deployed APIs
+You can test your APIs connectiviy and functionality by running the `./test/test_apis.py` script. The script will call each API we have published, and validate the response (you must have bootstraped your account first). Do *note* this does not test the labmda full coverage or functionality, but really servers the pupose of testing apis after they are published, after deployments.

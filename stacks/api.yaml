@@ -194,17 +194,15 @@ Resources:
           - REGIONAL
       RegionalCertificateArn: !Ref AcmCertificateArn
   ApiGatewayAliasRecord:
-    Type: AWS::Route53::RecordSetGroup
+    Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: !Ref HostedZoneId
-      RecordSets:
-        - Name: !Sub "${ENV}-api.tastingswithtay.com."
-          Type: A
-          AliasTarget:
-            HostedZoneId: !GetAtt ApiGatewayDomainName.RegionalHostedZoneId
-            DNSName: !GetAtt ApiGatewayDomainName.RegionalDomainName
-            EvaluateTargetHealth: true
-          Region: us-east-1
+      Name: !Sub "${ENV}-api.tastingswithtay.com."
+      Type: A
+      AliasTarget:
+        HostedZoneId: !GetAtt ApiGatewayDomainName.RegionalHostedZoneId
+        DNSName: !GetAtt ApiGatewayDomainName.RegionalDomainName
+        EvaluateTargetHealth: true
   APIBaseMapping:
     Type: "AWS::ApiGateway::BasePathMapping"
     Properties:
