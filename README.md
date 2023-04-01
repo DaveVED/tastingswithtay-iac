@@ -4,24 +4,6 @@ Resources supporting the management and creation of the infrasture for `tastings
 
 This `IaC` could also be forked, and used to support any `3 tier` application you wanted to host on `AWS`.
 
-
-## CI
-The IaC is supporting using AWS `CI` features, the functionality incudles.
-
-- [x] CodePipeline as a wrapper for the IaC pipeline.
-- [x] GitHub source (need to have tokens configured), with a hook setup for pushes to the a `develop` branch.
-- [x] CodeBuild to package build & package the 'lambads' and the `IaC` foundational components.
-- [x] Deploy stage to create/update the CloudFormation templates.
-
-You can provison this pipeline uisng the `./lib/pipeline-iac/iac_pipeline.yaml` file, if you'd like.
-
-#### Contributing
-If you get access, and would like to contribute to this, please follow this statergy, to get your code commited.
-
-- [x] From `develop` create a branch `:github_username/:feature_name`
-- [x] Once ready up a pull request to `develop`. `DaveVED` will have to review it.
-- [x] Once approved AWS CI pipeline will be executed, and you should be able to see your changes at `dev.tastingswithtay.com`.
-
 ## Bootstraping the Data
 When the infastruce is first spun up, you should bootstrap the `dynamdodb` database, and `s3` asset bucket with the intial data needed to support basic functionality. The can be done using the `./lib.scripts/init_dump.py` script. This will.
 
@@ -75,3 +57,25 @@ check it out.
 ```
 xxx
 ```
+
+## CI
+The IaC is supporting using AWS `CI` features, the functionality incudles.
+
+- [x] CodePipeline as a wrapper for the IaC pipeline.
+- [x] GitHub source (need to have tokens configured), with a hook setup for pushes to the a `develop` branch.
+- [x] CodeBuild to package build & package the 'lambads' and the `IaC` foundational components.
+- [x] Deploy stage to create/update the CloudFormation templates.
+
+You can provison this pipeline uisng the `./lib/pipeline-iac/iac_pipeline.yaml` file, if you'd like.
+
+### Contributing
+If you get access, and would like to contribute to this, please follow this statergy, to get your code commited.
+
+- [x] From `develop` create a branch `:github_username/:feature_name`
+- [x] Once ready up a pull request to `develop`. `DaveVED` will have to review it.
+- [x] Once approved AWS CI pipeline will be executed, and you should be able to see your changes at `dev.tastingswithtay.com`.
+
+### How the Foundation works
+For this project, we are using 'nested stacks' this allows us to keep one copy for each env, that is clean and simple. The way it works is, we import our common components into the foundation, wihtin the common compoents, we define, key features and group them, such as `networking` or `compute` resources are gouped in common components, that are reusable (we use them for our other fun projects to).
+
+In the `buildspec.yml` you can see that we upload these comon files to a private `s3` file, that the foundation uses, so each new build, a new version will get published, and cloudforamtion will check if any updates need to be made. 
