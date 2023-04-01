@@ -59,7 +59,6 @@ Resources:
         - "arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator"
         - "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
         - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
-        - "arn:aws:iam::aws:policy/AdministratorAccess"
       Policies:
         - PolicyName: "S3Access"
           PolicyDocument:
@@ -212,9 +211,16 @@ Resources:
   ApiGatewayAuthorizer:
     Type: AWS::ApiGateway::Authorizer
     Properties:
-      AuthorizerResultTtlInSeconds: 300
+      AuthorizerResultTtlInSeconds: 120
       AuthorizerUri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations"
       IdentitySource: method.request.header.Authorization
       Name: !Sub "${Project}-${ENV}-authorizer"
       RestApiId: !Ref ApiGateway
       Type: TOKEN
+  GWAuthPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt AuthLambda.Arn
+      Principal: "apigateway.amazonaws.com"
+      SourceArn: !Sub "arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/authorizers/${ApiGatewayAuthorizer}"
