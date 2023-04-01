@@ -183,7 +183,7 @@ Resources:
       StageName: "v1"
   ApiGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
-    DependsOn: ApiGatewayMethodContentGet
+    DependsOn: ApiGatewayMethodContentIdGet
     Properties:
       Description:
         !Join [
