@@ -9,6 +9,6 @@ headers = {"Authorization": f"{access_token}"}
 
 # Make the API request
 response = requests.get(
-    "https://wzaygu7rgf.execute-api.us-east-1.amazonaws.com/v1/content", headers=headers
+    "https://uedsu2xmdh.execute-api.us-east-1.amazonaws.com/v1/content", headers=headers
 )
 print(response.text)
