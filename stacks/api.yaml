@@ -30,7 +30,7 @@ Resources:
       Code:
         S3Bucket: "tastingswithtay-cf-iac-common-components"
         S3Key: "lambda/auth.zip"
-      Role: !GetAtt LambdaAuthExecutionRole.Arn
+      Role: !GetAtt LambdaExecutionRole.Arn
       Timeout: 30
   ContentLambda:
     Type: "AWS::Lambda::Function"
@@ -56,6 +56,10 @@ Resources:
             Action: "sts:AssumeRole"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        - "arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator"
+        - "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+        - "arn:aws:iam::aws:policy/AdministratorAccess"
       Policies:
         - PolicyName: "S3Access"
           PolicyDocument:
@@ -75,32 +79,6 @@ Resources:
                 Action:
                   - "execute-api:Invoke"
                 Resource: "*"
-  LambdaAuthExecutionRole:
-    Type: "AWS::IAM::Role"
-    Properties:
-      RoleName: "LambdaAuthExecutionRole"
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              Service: "lambda.amazonaws.com"
-            Action: "sts:AssumeRole"
-      ManagedPolicyArns:
-        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-        - "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
-        - "arn:aws:iam::aws:policy/AdministratorAccess"
-      Policies:
-        - PolicyName: "S3Access"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: "Allow"
-                Action:
-                  - "s3:Get*"
-                  - "s3:List*"
-                  - "s3:PutObject"
-                Resource: "arn:aws:s3:::tastingswithtay-cf-iac-common-components/*"
   ApiGateway:
     Type: "AWS::ApiGateway::RestApi"
     Properties:
