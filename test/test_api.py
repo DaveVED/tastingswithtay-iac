@@ -1,14 +1,42 @@
 #!/usr/bin/env python3
 import requests
+import boto3
+from botocore.exceptions import ClientError
+from typing import Optional
 
-# Replace with your actual access token
-access_token = "auth12345678"
 
-# Construct the request headers with the Authorization header
-headers = {"Authorization": access_token, "client_id": "tastingswithtay"}
+session = boto3.session.Session()
 
-# Make the API request
-response = requests.get(
-    "https://dev-api.tastingswithtay.com/v1/content", headers=headers
-)
-print(response.text)
+
+def get_secret(secret_name: str, region_name: Optional[str] = "us-east-1") -> str:
+    client = session.client(service_name="secretsmanager", region_name=region_name)
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    except ClientError as e:
+        print(f"Error fetching secret {secret_name}: {e}")
+        raise e
+
+    # Decrypts secret using the associated KMS key.
+    secret = get_secret_value_response["SecretString"]
+
+    return secret
+
+
+def main():
+    # Replace with your actual access token
+    print("HERE")
+    access_token = get_secret("tastingswithtay-api-key", "us-east-1")
+
+    # Construct the request headers with the Authorization header
+    headers = {"Authorization": access_token, "client_id": "tastingswithtay"}
+
+    # Make the API request
+    response = requests.get(
+        "https://dev-api.tastingswithtay.com/v1/content/1234", headers=headers
+    )
+    print(response.text)
+
+
+if __name__ == "__main__":
+    main()

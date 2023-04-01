@@ -15,11 +15,38 @@ The IaC is supporting using AWS `CI` features, the functionality incudles.
 
 You can provison this pipeline uisng the `./lib/pipeline-iac/iac_pipeline.yaml` file, if you'd like.
 
+#### Contributing
+If you get access, and would like to contribute to this, please follow this statergy, to get your code commited.
+
+- [x] From `develop` create a branch `:github_username/:feature_name`
+- [x] Once ready up a pull request to `develop`. `DaveVED` will have to review it.
+- [x] Once approved AWS CI pipeline will be executed, and you should be able to see your changes at `dev.tastingswithtay.com`.
+
 ## Bootstraping the Data
-When the infastruce is first spun up, you should bootstrap the `dynamdodb` database, and `s3` asset bucket with the intial data needed to support basic functionality. The can be done using the `init_dump.py` script. This will.
+When the infastruce is first spun up, you should bootstrap the `dynamdodb` database, and `s3` asset bucket with the intial data needed to support basic functionality. The can be done using the `./lib.scripts/init_dump.py` script. This will.
 
 - [x] Populate the s3 asset bucekt with the images supporting the initial recipes.
 - [x] Populate the dynamodb with the intial content (recipes) and the metadata to support those.
+
+Check it out.
+```
+(.venv) % ./lib/scripts/init_dump.py
+2023-04-01 18:08:42,096 - INFO - Loading initial data...
+2023-04-01 18:08:42,097 - INFO - Loaded 4 items from JSON file.
+2023-04-01 18:08:42,097 - INFO - Loaded 4 items of initial data.
+2023-04-01 18:08:42,097 - INFO - Uploading files to S3...
+2023-04-01 18:08:45,657 - INFO - Uploaded file dummy/pho.jpg to S3 bucket tastingswithtay-dev-assets
+2023-04-01 18:08:47,095 - INFO - Uploaded file dummy/bread.jpg to S3 bucket tastingswithtay-dev-assets
+2023-04-01 18:08:48,207 - INFO - Uploaded file dummy/beef.jpg to S3 bucket tastingswithtay-dev-assets
+2023-04-01 18:08:49,328 - INFO - Uploaded file dummy/pork.jpg to S3 bucket tastingswithtay-dev-assets
+2023-04-01 18:08:49,329 - INFO - Uploaded 4 files to S3.
+2023-04-01 18:08:49,330 - INFO - Writing data to DynamoDB...
+2023-04-01 18:08:49,552 - INFO - Wrote item with contentId 9f22ea12-c858-4bca-832e-cd477aa61e6e and sortKey beef to DynamoDB table tastingswithtay-dev-content
+2023-04-01 18:08:49,607 - INFO - Wrote item with contentId 4a20f690-28e1-4808-84df-a416773f882e and sortKey bread to DynamoDB table tastingswithtay-dev-content
+2023-04-01 18:08:49,661 - INFO - Wrote item with contentId 6d5f8b3a-4f08-4ffd-b379-009434409266 and sortKey pho to DynamoDB table tastingswithtay-dev-content
+2023-04-01 18:08:49,714 - INFO - Wrote item with contentId 1d6bbc10-bb74-4e47-a459-3ff6b01797b2 and sortKey pork to DynamoDB table tastingswithtay-dev-content
+2023-04-01 18:08:49,715 - INFO - Successfully loaded initial data, uploaded files to S3, and wrote data to DynamoDB.
+```
 
 ## Creating an API Key
 The lmabda authoier works with a `Authorization` token passed it it via a header. It will.
@@ -35,8 +62,16 @@ To create a client and a token you can leverage the `./lib/scripts/create_api_ke
 
 Check it out.
 ```
-xxx
+(.venv) % ./lib/scripts/create_api_keys.py --name tastingswithtay
+2023-04-01 16:01:39,458 - botocore.credentials - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2023-04-01 16:01:39,744 - root - INFO - Created secret tastingswithtay-api-key.
+2023-04-01 16:01:39,745 - root - INFO - API key for tastingswithtay stored in Secrets Manager.
 ```
 
 ## Testing Deployed APIs
 You can test your APIs connectiviy and functionality by running the `./test/test_apis.py` script. The script will call each API we have published, and validate the response (you must have bootstraped your account first). Do *note* this does not test the labmda full coverage or functionality, but really servers the pupose of testing apis after they are published, after deployments.
+
+check it out.
+```
+xxx
+```

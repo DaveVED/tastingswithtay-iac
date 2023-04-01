@@ -2,41 +2,29 @@
     {
         "contentName": "beef",
         "contentType": "RECIPE",
-        "contentDetails": "xxx",
         "shortDescription": "Helo, this is my beef recipe, hope you enjoy.",
-        "imageLocation": "xxx",
         "landing": true,
-        "acive": true,
-        "localAssestPath": "xxx"
+        "active": true
     },
     {
         "contentName": "bread",
         "contentType": "RECIPE",
-        "contentDetails": "xxx",
         "shortDescription": "Helo, this is my bread recipe, hope you enjoy.",
-        "imageLocation": "xxx",
         "landing": true,
-        "acive": true,
-        "localAssestPath": "xxx"
+        "active": true
     },
     {
         "contentName": "pho",
         "contentType": "RECIPE",
-        "contentDetails": "xxx",
         "shortDescription": "Helo, this is my pho recipe, hope you enjoy.",
-        "imageLocation": "xxx",
         "landing": true,
-        "acive": true,
-        "localAssestPath": "xxx"
+        "active": true
     },
     {
         "contentName": "pork",
         "contentType": "RECIPE",
-        "contentDetails": "xxx",
         "shortDescription": "Helo, this is my pork recipe, hope you enjoy.",
-        "imageLocation": "xxx",
         "landing": true,
-        "acive": true,
-        "localAssestPath": "xxx"
+        "active": true
     }
 ]
