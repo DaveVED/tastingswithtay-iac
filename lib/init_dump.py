@@ -16,13 +16,14 @@ def load_init_data():
     return data
 
 
-def populate_init_data():
-    pass
+def populate_init_data(data):
+    for input in data:
+        print(input)
 
 
 def main():
     data = load_init_data()
-    print(data)
+    populate_init_data(data)
 
 
 if __name__ == "__main__":
