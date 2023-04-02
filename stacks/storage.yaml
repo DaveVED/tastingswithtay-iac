@@ -55,9 +55,9 @@ Resources:
         - AttributeName: sortKey
           AttributeType: S
         - AttributeName: landing
-          AttributeType: B
+          AttributeType: S
         - AttributeName: active
-          AttributeType: B
+          AttributeType: S
       KeySchema:
         - AttributeName: contentId
           KeyType: HASH
@@ -77,6 +77,7 @@ Resources:
         StreamViewType: NEW_AND_OLD_IMAGES
     UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
+
   SubscriberTable:
     Type: AWS::DynamoDB::Table
     Properties:
