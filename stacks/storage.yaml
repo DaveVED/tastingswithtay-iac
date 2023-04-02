@@ -55,9 +55,9 @@ Resources:
         - AttributeName: sortKey
           AttributeType: S
         - AttributeName: landing
-          AttributeType: S
+          AttributeType: B
         - AttributeName: active
-          AttributeType: S
+          AttributeType: B
       KeySchema:
         - AttributeName: contentId
           KeyType: HASH

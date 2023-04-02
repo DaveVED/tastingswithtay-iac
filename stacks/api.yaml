@@ -158,12 +158,6 @@ Resources:
       ParentId: !Ref ApiGatewayContentResource
       PathPart: "{contentId}"
       RestApiId: !Ref ApiGateway
-  ApiGatewayContentTypesResource:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId: !Ref ApiGatewayContentResource
-      PathPart: "types"
-      RestApiId: !Ref ApiGateway
   ApiGatewayMethodContentActiveGet:
     Type: AWS::ApiGateway::Method
     Properties:

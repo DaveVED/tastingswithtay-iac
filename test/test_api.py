@@ -30,11 +30,15 @@ def main():
     # Construct the request headers with the Authorization header
     headers = {"Authorization": access_token, "client_id": "tastingswithtay"}
 
-    # Make the API request
     response = requests.get(
-        "https://dev-api.tastingswithtay.com/v1/content/9f22ea12-c858-4bca-832e-cd477aa61e6e",
+        "https://dev-api.tastingswithtay.com/v1/content/active",
         headers=headers,
     )
+    # Make the API request
+    # response = requests.get(
+    #    "https://dev-api.tastingswithtay.com/v1/content/9f22ea12-c858-4bca-832e-cd477aa61e6e",
+    #    headers=headers,
+    # )
     print(response.text)
 
 
