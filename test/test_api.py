@@ -39,7 +39,7 @@ def main():
     #    "https://dev-api.tastingswithtay.com/v1/content/9f22ea12-c858-4bca-832e-cd477aa61e6e",
     #    headers=headers,
     # )
-    print(response.text)
+    print(response.json())
 
 
 if __name__ == "__main__":

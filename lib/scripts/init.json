@@ -3,28 +3,28 @@
         "contentName": "beef",
         "contentType": "RECIPE",
         "shortDescription": "Helo, this is my beef recipe, hope you enjoy.",
-        "landing": true,
-        "active": true
+        "landing": "true",
+        "active": "true"
     },
     {
         "contentName": "bread",
         "contentType": "RECIPE",
         "shortDescription": "Helo, this is my bread recipe, hope you enjoy.",
-        "landing": true,
-        "active": true
+        "landing": "true",
+        "active": "true"
     },
     {
         "contentName": "pho",
         "contentType": "RECIPE",
         "shortDescription": "Helo, this is my pho recipe, hope you enjoy.",
-        "landing": true,
-        "active": true
+        "landing": "true",
+        "active": "true"
     },
     {
         "contentName": "pork",
         "contentType": "RECIPE",
         "shortDescription": "Helo, this is my pork recipe, hope you enjoy.",
-        "landing": true,
-        "active": true
+        "landing": "true",
+        "active": "true"
     }
 ]

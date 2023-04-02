@@ -1,19 +1,53 @@
-class ContentInterface:
-    def __init__(self, dyn_resource, table_name):
-        self.dyn_resource = dyn_resource
-        self.table = self.dyn_resource.Table(table_name)
+import logging
+import json
+import boto3
+from content.content_interface import ContentInterface
 
-    def get_content(self, content_id):
-        try:
-            response = self.table.get_item(Key={"contentId": content_id})
-        except ClientError as err:
-            logger.error(
-                "Couldn't get content with contentId %s from table %s. Here's why: %s: %s",
-                content_id,
-                self.table.name,
-                err.response["Error"]["Code"],
-                err.response["Error"]["Message"],
-            )
-            raise
-        else:
-            return response.get("Item")
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+TABLE_NAME = "tastingswithtay-dev-content"
+
+content_interface = ContentInterface(dynamodb, TABLE_NAME)
+
+
+def handler(event, context):
+    response_data = None
+
+    if "httpMethod" in event:
+        http_method = event["httpMethod"]
+
+        if http_method == "GET":
+            try:
+                path = event["pathParameters"]["contentId"]
+                if path == "active":
+                    content_data = content_interface.get_active_content()
+                    data = content_data
+                    logger.info(f"Retrieved content data: {content_data}")
+
+                    return {
+                        "statusCode": 200,
+                        "headers": {},
+                        "body": json.dumps(content_data),
+                    }
+            except KeyError as err:
+                logger.error(f"Error: Missing path parameter - {err}")
+                return {
+                    "statusCode": 400,
+                    "headers": {},
+                    "body": json.dumps({"error": "Missing path parameter"}),
+                }
+            except Exception as err:
+                logger.error(f"Error: {err}")
+                return {
+                    "statusCode": 500,
+                    "headers": {},
+                    "body": json.dumps({"error": "Internal server error"}),
+                }
+    else:
+        return {
+            "statusCode": 400,
+            "headers": {},
+            "body": json.dumps({"error": "Invalid request"}),
+        }
