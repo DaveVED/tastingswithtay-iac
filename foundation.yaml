@@ -54,7 +54,7 @@ Resources:
         Project: !Ref Project
         ECRRepoUri: !Ref ECRRepoUri
         TaskCount: !Ref TaskCount
-  StorageStack:
+  StorageStackv1:
     Type: AWS::CloudFormation::Stack
     DependsOn:
       - Networking
