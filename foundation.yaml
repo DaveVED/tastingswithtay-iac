@@ -39,3 +39,14 @@ Resources:
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
+  APIStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - NetworkingStack
+      - ComputeStack
+      - StorageStack
+    Properties:
+      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/api.yaml"
+      Parameters:
+        ENV: !Ref ENV
+        Project: !Ref Project
