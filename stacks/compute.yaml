@@ -35,6 +35,10 @@ Parameters:
     Type: String
     Default: "Z03417913PAYUETEFT28N"
     Description: "Hosted Zone ID, to map to ALB."
+  AcmCertificateArn:
+    Type: String
+    Default: "arn:aws:acm:us-east-1:007794960432:certificate/0c4ef098-5199-4fce-b8cc-04f334c2ba1a"
+    Description: "The ARN of the ACM certificate for the custom domain."
 Resources:
   ECSCluster:
     Type: "AWS::ECS::Cluster"
@@ -198,11 +202,11 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       VpcId: !ImportValue VPC
-      Port: 80
-      Protocol: HTTP
+      Port: 8080
+      Protocol: HTTPS
       TargetType: ip
       HealthCheckIntervalSeconds: 180
-      HealthCheckProtocol: HTTP
+      HealthCheckProtocol: HTTPS
       HealthCheckPath: /
       HealthCheckTimeoutSeconds: 30
       HealthyThresholdCount: 5
@@ -215,12 +219,16 @@ Resources:
   ECSServiceListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
+      Certificates:
+        - CertificateArn:
+            Ref: AcmCertificateArn
       DefaultActions:
         - TargetGroupArn: !Ref EcsTargetGroup
           Type: forward
       LoadBalancerArn: !Ref EcsLoadBalancer
-      Port: 80
-      Protocol: HTTP
+      Port: "443"
+      Protocol: HTTPS
+      SslPolicy: "ELBSecurityPolicy-2016-08"
   DNS:
     Type: AWS::Route53::RecordSetGroup
     Properties:
