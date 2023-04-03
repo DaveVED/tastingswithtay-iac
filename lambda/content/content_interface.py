@@ -1,6 +1,3 @@
-dave.w.dennis@gmail.com
-well can we update my lambda to use the new format? 
-
 import boto3
 import logging
 from botocore.exceptions import ClientError
@@ -36,7 +33,6 @@ class ContentInterface:
 
     def _format_content_output(self, items):
         for item in items:
-            # https://tastingswithtay-dev-assets.s3.amazonaws.com/dummy/beef.jpg
             image_url = item["imageUrl"]
             parsed_url = urlparse(image_url)
             bucket_name = parsed_url.netloc.split('.')[0]
