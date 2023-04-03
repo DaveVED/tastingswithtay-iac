@@ -21,3 +21,12 @@ Resources:
       Parameters:
         ENV: !Ref ENV
         Project: !Ref Project
+  StorageStackV1:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - NetworkingStack
+    Properties:
+      TemplateURL: "https://tastingswithtay-cf-iac-common-components.s3.amazonaws.com/storage.yaml"
+      Parameters:
+        ENV: !Ref ENV
+        Project: !Ref Project

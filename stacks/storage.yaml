@@ -77,7 +77,6 @@ Resources:
         StreamViewType: NEW_AND_OLD_IMAGES
     UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
-
   SubscriberTable:
     Type: AWS::DynamoDB::Table
     Properties:
